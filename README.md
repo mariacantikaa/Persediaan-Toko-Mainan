@@ -57,10 +57,6 @@ Aplikasi web untuk membantu pengelolaan persediaan barang dan pencatatan transak
 
 Jalankan aplikasi melalui server lokal seperti Live Server. Jangan membuka halaman dengan alamat `file://`.
 
-## Batasan
-
-Versi saat ini belum menyediakan modul retur pembelian atau retur penjualan. Aplikasi juga belum menyediakan autentikasi pengguna dan pengaturan hak akses berbasis pengguna.
-
 ## Pemecahan Masalah
 
 - **`Failed to fetch` atau `DNS_PROBE_FINISHED_NXDOMAIN`:** periksa koneksi internet, Project URL di `config.js`, status project Supabase, dan akses jaringan ke Supabase.
