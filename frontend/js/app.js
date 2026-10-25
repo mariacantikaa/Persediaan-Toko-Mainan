@@ -89,16 +89,10 @@ const lookupConfig = {
 
 document.addEventListener(
     "DOMContentLoaded",
-    async function () {
-
+    function () {
         pasangStyleLookup();
-
         inisialisasiSupabase();
-
         loadTema();
-
-        await dashboard();
-
     }
 );
 
@@ -385,55 +379,33 @@ function ubahJudul(judul) {
 
 }
 
-
 // =====================================================
 // AKTIFKAN MENU
 // =====================================================
 
 function aktifkanMenu(namaMenu) {
+    // 1. Bersihkan badge balance jika keluar dari menu Neraca
+    if (namaMenu !== "Neraca") {
+        const badge = document.getElementById("indikatorBalanceNeraca");
+        if (badge) badge.remove();
+    }
 
-    const semuaMenu =
-        document.querySelectorAll(
-            ".menu-button"
-        );
+    // 2. Aktifkan penanda menu aktif
+    const semuaMenu = document.querySelectorAll(".menu-button");
 
+    semuaMenu.forEach(function (button) {
+        button.classList.remove("active");
 
-    semuaMenu.forEach(
-        function (button) {
+        const span = button.querySelector("span");
+        const teks = span
+            ? span.textContent.trim().toLowerCase()
+            : button.innerText.trim().toLowerCase();
 
-            button.classList.remove(
-                "active"
-            );
-
-
-            const span =
-                button.querySelector(
-                    "span"
-                );
-
-
-            const teks =
-                span
-                    ? span.textContent.trim().toLowerCase()
-                    : button.innerText.trim().toLowerCase();
-
-
-            if (
-                teks ===
-                namaMenu.trim().toLowerCase()
-            ) {
-
-                button.classList.add(
-                    "active"
-                );
-
-            }
-
+        if (teks === namaMenu.trim().toLowerCase()) {
+            button.classList.add("active");
         }
-    );
-
+    });
 }
-
 
 // =====================================================
 // CEK SUPABASE
@@ -720,8 +692,8 @@ async function dashboard() {
             </div>
 
             <div class="dashboard-welcome-icon">
-                🧸
-            </div>
+    <img src="../img/logo-ctoy.png" alt="Logo Ctoyventory" class="img-banner-logo">
+</div>
 
         </div>
 
@@ -13750,56 +13722,30 @@ function tampilkanTabelLaporanStok(
         </div>
 
 
-        <div
-            class="pagination"
-            style="
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-                margin-top: 20px;
-                flex-wrap: wrap;
-            "
-        >
-
+        <!-- PAGINATION LAPORAN STOK (PERSIS RETUR & MODUL LAIN) -->
+        <div class="custom-pagination-container" style="margin-top: 20px;">
             <button
                 type="button"
-                class="btn-secondary"
-                onclick="tampilkanTabelLaporanStok(
-                    dataLaporanStok,
-                    ${halaman - 1}
-                )"
-                ${halaman === 1 ? "disabled" : ""}
+                class="btn btn-secondary pagination-nav-btn"
+                onclick="tampilkanTabelLaporanStok(dataLaporanStok, ${halaman - 1})"
+                ${halaman <= 1 ? "disabled" : ""}
             >
                 ← Sebelumnya
             </button>
 
-
-            <span
-                style="
-                    padding: 8px 14px;
-                    font-weight: 600;
-                "
-            >
-                Halaman ${halaman}
-                dari ${totalHalaman}
+            <span class="pagination-page-label">
+                Halaman ${halaman} dari ${totalHalaman}
             </span>
-
 
             <button
                 type="button"
-                class="btn-secondary"
-                onclick="tampilkanTabelLaporanStok(
-                    dataLaporanStok,
-                    ${halaman + 1}
-                )"
-                ${halaman === totalHalaman ? "disabled" : ""}
+                class="btn btn-primary pagination-nav-btn"
+                onclick="tampilkanTabelLaporanStok(dataLaporanStok, ${halaman + 1})"
+                ${halaman >= totalHalaman ? "disabled" : ""}
             >
                 Berikutnya →
             </button>
-
         </div>
-
     `;
 
 
@@ -16370,68 +16316,38 @@ function tampilkanDataLaporanPembelian(
         }
     );
 
-// =========================================
-// PAGINATION BUTTON
-// =========================================
+// =====================================================
+    // PAGINATION LAPORAN PEMBELIAN (PERSIS RETUR)
+    // =====================================================
+    html += `
+        <tr>
+            <td colspan="7" style="padding: 18px 10px; border: none; background: transparent;">
+                <div class="custom-pagination-container">
+                    <button
+                        type="button"
+                        class="btn btn-secondary pagination-nav-btn"
+                        onclick="tampilkanDataLaporanPembelian(dataLaporanPembelianTerfilter, ${halaman - 1})"
+                        ${halaman <= 1 ? "disabled" : ""}
+                    >
+                        ← Sebelumnya
+                    </button>
 
-html += `
+                    <span class="pagination-page-label">
+                        Halaman ${halaman} dari ${totalHalaman}
+                    </span>
 
-    <tr>
-
-        <td colspan="7">
-
-            <div
-                class="pagination"
-                style="
-                    display:flex;
-                    justify-content:center;
-                    align-items:center;
-                    gap:12px;
-                    margin-top:15px;
-                "
-            >
-
-                <button
-                    type="button"
-                    class="btn-secondary"
-                    onclick="
-                        tampilkanDataLaporanPembelian(
-                            dataLaporanPembelianTerfilter,
-                            ${halaman - 1}
-                        )
-                    "
-                    ${halaman === 1 ? "disabled" : ""}
-                >
-                    ← Sebelumnya
-                </button>
-
-
-                <span>
-                    Halaman ${halaman} dari ${totalHalaman}
-                </span>
-
-
-                <button
-                    type="button"
-                    class="btn-secondary"
-                    onclick="
-                        tampilkanDataLaporanPembelian(
-                            dataLaporanPembelianTerfilter,
-                            ${halaman + 1}
-                        )
-                    "
-                    ${halaman === totalHalaman ? "disabled" : ""}
-                >
-                    Berikutnya →
-                </button>
-
-            </div>
-
-        </td>
-
-    </tr>
-
-`;
+                    <button
+                        type="button"
+                        class="btn btn-primary pagination-nav-btn"
+                        onclick="tampilkanDataLaporanPembelian(dataLaporanPembelianTerfilter, ${halaman + 1})"
+                        ${halaman >= totalHalaman ? "disabled" : ""}
+                    >
+                        Berikutnya →
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
 
     tabel.innerHTML =
         html;
@@ -16439,148 +16355,75 @@ html += `
 }
 
 // =====================================================
-// SUMMARY
+// SUMMARY (PERIODE MENGIKUTI INPUT FILTER TANGGAL)
 // =====================================================
 
-function tampilkanSummaryLaporanPembelian(
-    data
-) {
-
-    const totalTransaksi =
-        data.length;
-
+function tampilkanSummaryLaporanPembelian(data) {
+    const totalTransaksi = data.length;
 
     let totalBarang = 0;
     let totalNilai = 0;
+    let pembelianTertinggi = 0;
 
+    const pemasokSet = new Set();
 
-    const pemasokSet =
-        new Set();
+    data.forEach(function (item) {
+        const totalPembelian = Number(item.total_pembelian || 0);
+        totalNilai += totalPembelian;
 
-
-    data.forEach(
-        function (item) {
-
-            totalNilai +=
-                Number(
-                    item.total_pembelian || 0
-                );
-
-
-            if (
-                item.pemasok &&
-                item.pemasok.id_pemasok
-            ) {
-
-                pemasokSet.add(
-                    item.pemasok.id_pemasok
-                );
-
-            }
-
-
-            const detail =
-                item.detail_pembelian || [];
-
-
-            detail.forEach(
-                function (detailItem) {
-
-                    totalBarang +=
-                        Number(
-                            detailItem.jumlah || 0
-                        );
-
-                }
-            );
-
+        if (totalPembelian > pembelianTertinggi) {
+            pembelianTertinggi = totalPembelian;
         }
-    );
 
+        if (item.pemasok && item.pemasok.id_pemasok) {
+            pemasokSet.add(item.pemasok.id_pemasok);
+        }
 
-    const rataRata =
-        totalTransaksi > 0
-            ? totalNilai / totalTransaksi
-            : 0;
+        const detail = item.detail_pembelian || [];
+        detail.forEach(function (detailItem) {
+            totalBarang += Number(detailItem.jumlah || 0);
+        });
+    });
 
+    const rataRata = totalTransaksi > 0 ? totalNilai / totalTransaksi : 0;
 
-    setText(
-        "pembelianTotalTransaksi",
-        totalTransaksi
-    );
+    // Tampilkan Summary Cards
+    setText("pembelianTotalTransaksi", totalTransaksi);
+    setText("pembelianTotalBarang", totalBarang);
+    setText("pembelianTotalNilai", formatRupiah(totalNilai));
+    setText("pembelianTotalPemasok", pemasokSet.size);
+    setText("pembelianRataRata", formatRupiah(rataRata));
+    setText("pembelianTertinggi", formatRupiah(pembelianTertinggi));
 
+    // =============================================
+    // PERIODE DATA (PRIORITAS DARI INPUT FILTER)
+    // =============================================
+    const inputMulai = document.getElementById("filterTanggalMulaiPembelian")?.value;
+    const inputAkhir = document.getElementById("filterTanggalAkhirPembelian")?.value;
 
-    setText(
-        "pembelianTotalBarang",
-        totalBarang
-    );
+    let periode = "Semua";
 
-
-    setText(
-        "pembelianTotalNilai",
-        formatRupiah(totalNilai)
-    );
-
-
-    setText(
-        "pembelianTotalPemasok",
-        pemasokSet.size
-    );
-
-
-    setText(
-        "pembelianRataRata",
-        formatRupiah(rataRata)
-    );
-
-
-    let periode =
-        "Semua";
-
-
-    if (data.length > 0) {
-
-        const tanggal =
-            data
-                .map(
-                    item =>
-                        item.tanggal_pembelian
-                )
-                .filter(Boolean)
-                .sort();
-
+    if (inputMulai && inputAkhir) {
+        periode = `${formatTanggalPembelian(inputMulai)} - ${formatTanggalPembelian(inputAkhir)}`;
+    } else if (inputMulai) {
+        periode = `Mulai ${formatTanggalPembelian(inputMulai)}`;
+    } else if (inputAkhir) {
+        periode = `Sampai ${formatTanggalPembelian(inputAkhir)}`;
+    } else if (data.length > 0) {
+        const tanggal = data
+            .map(item => item.tanggal_pembelian)
+            .filter(Boolean)
+            .sort();
 
         if (tanggal.length > 0) {
-
-            const awal =
-                formatTanggalPembelian(
-                    tanggal[0]
-                );
-
-
-            const akhir =
-                formatTanggalPembelian(
-                    tanggal[tanggal.length - 1]
-                );
-
-
-            periode =
-                awal === akhir
-                    ? awal
-                    : `${awal} - ${akhir}`;
-
+            const awal = formatTanggalPembelian(tanggal[0]);
+            const akhir = formatTanggalPembelian(tanggal[tanggal.length - 1]);
+            periode = awal === akhir ? awal : `${awal} - ${akhir}`;
         }
-
     }
 
-
-    setText(
-        "pembelianPeriode",
-        periode
-    );
-
+    setText("pembelianPeriode", periode);
 }
-
 
 // =====================================================
 // REKAP PER PEMASOK
@@ -19371,252 +19214,112 @@ function tampilkanDataLaporanPenjualan(
         }
     );
 
-
+// =====================================================
+    // PAGINATION LAPORAN PENJUALAN (PERSIS RETUR)
     // =====================================================
-    // PAGINATION
-    // =====================================================
-
     html += `
-
         <tr>
-
-            <td colspan="7">
-
-                <div
-                    class="pagination"
-                    style="
-                        display:flex;
-                        justify-content:center;
-                        align-items:center;
-                        gap:10px;
-                        padding:15px 0;
-                    "
-                >
-
+            <td colspan="7" style="padding: 18px 10px; border: none; background: transparent;">
+                <div class="custom-pagination-container">
                     <button
                         type="button"
-                        onclick="
-                            tampilkanDataLaporanPenjualan(
-                                dataLaporanPenjualanTerfilter,
-                                ${halaman - 1}
-                            )
-                        "
-                        ${halaman === 1 ? "disabled" : ""}
+                        class="btn btn-secondary pagination-nav-btn"
+                        onclick="tampilkanDataLaporanPenjualan(dataLaporanPenjualanTerfilter, ${halaman - 1})"
+                        ${halaman <= 1 ? "disabled" : ""}
                     >
                         ← Sebelumnya
                     </button>
 
-
-                    <span>
+                    <span class="pagination-page-label">
                         Halaman ${halaman} dari ${totalHalaman}
                     </span>
 
-
                     <button
                         type="button"
-                        onclick="
-                            tampilkanDataLaporanPenjualan(
-                                dataLaporanPenjualanTerfilter,
-                                ${halaman + 1}
-                            )
-                        "
-                        ${halaman === totalHalaman ? "disabled" : ""}
+                        class="btn btn-primary pagination-nav-btn"
+                        onclick="tampilkanDataLaporanPenjualan(dataLaporanPenjualanTerfilter, ${halaman + 1})"
+                        ${halaman >= totalHalaman ? "disabled" : ""}
                     >
                         Berikutnya →
                     </button>
-
                 </div>
-
             </td>
-
         </tr>
-
     `;
-
-
     tabel.innerHTML =
         html;
 
 }
 
 // =====================================================
-// SUMMARY
+// SUMMARY (PERIODE MENGIKUTI INPUT FILTER TANGGAL)
 // =====================================================
 
-function tampilkanSummaryLaporanPenjualan(
-    data
-) {
-
-    const totalTransaksi =
-        data.length;
-
+function tampilkanSummaryLaporanPenjualan(data) {
+    const totalTransaksi = data.length;
 
     let totalBarang = 0;
     let totalNilai = 0;
     let penjualanTertinggi = 0;
 
+    const pelangganSet = new Set();
 
-    const pelangganSet =
-        new Set();
+    data.forEach(function (item) {
+        const totalPenjualan = Number(item.total_penjualan || 0);
+        totalNilai += totalPenjualan;
 
-
-    data.forEach(
-        function (item) {
-
-            const totalPenjualan =
-                Number(
-                    item.total_penjualan || 0
-                );
-
-
-            totalNilai +=
-                totalPenjualan;
-
-
-            if (
-                totalPenjualan >
-                penjualanTertinggi
-            ) {
-
-                penjualanTertinggi =
-                    totalPenjualan;
-
-            }
-
-
-            if (
-                item.pelanggan &&
-                item.pelanggan.id_pelanggan
-            ) {
-
-                pelangganSet.add(
-                    item.pelanggan.id_pelanggan
-                );
-
-            }
-
-
-            const detail =
-                item.detail_penjualan || [];
-
-
-            detail.forEach(
-                function (detailItem) {
-
-                    totalBarang +=
-                        Number(
-                            detailItem.jumlah || 0
-                        );
-
-                }
-            );
-
+        if (totalPenjualan > penjualanTertinggi) {
+            penjualanTertinggi = totalPenjualan;
         }
-    );
 
+        if (item.pelanggan && item.pelanggan.id_pelanggan) {
+            pelangganSet.add(item.pelanggan.id_pelanggan);
+        }
 
-    const rataRata =
-        totalTransaksi > 0
-            ? totalNilai / totalTransaksi
-            : 0;
+        const detail = item.detail_penjualan || [];
+        detail.forEach(function (detailItem) {
+            totalBarang += Number(detailItem.jumlah || 0);
+        });
+    });
 
+    const rataRata = totalTransaksi > 0 ? totalNilai / totalTransaksi : 0;
 
-    // =============================================
-    // TAMPILKAN SUMMARY
-    // =============================================
-
-    setText(
-        "penjualanTotalTransaksi",
-        totalTransaksi
-    );
-
-
-    setText(
-        "penjualanTotalBarang",
-        totalBarang
-    );
-
-
-    setText(
-        "penjualanTotalNilai",
-        formatRupiah(
-            totalNilai
-        )
-    );
-
-
-    setText(
-        "penjualanTotalPelanggan",
-        pelangganSet.size
-    );
-
-
-    setText(
-        "penjualanRataRata",
-        formatRupiah(
-            rataRata
-        )
-    );
-
-
-    setText(
-        "penjualanTertinggi",
-        formatRupiah(
-            penjualanTertinggi
-        )
-    );
-
+    // Tampilkan Summary Cards
+    setText("penjualanTotalTransaksi", totalTransaksi);
+    setText("penjualanTotalBarang", totalBarang);
+    setText("penjualanTotalNilai", formatRupiah(totalNilai));
+    setText("penjualanTotalPelanggan", pelangganSet.size);
+    setText("penjualanRataRata", formatRupiah(rataRata));
+    setText("penjualanTertinggi", formatRupiah(penjualanTertinggi));
 
     // =============================================
-    // PERIODE DATA
+    // PERIODE DATA (PRIORITAS DARI INPUT FILTER)
     // =============================================
+    const inputMulai = document.getElementById("filterTanggalMulaiPenjualan")?.value;
+    const inputAkhir = document.getElementById("filterTanggalAkhirPenjualan")?.value;
 
-    let periode =
-        "Semua";
+    let periode = "Semua";
 
-
-    if (data.length > 0) {
-
-        const tanggal =
-            data
-                .map(
-                    function (item) {
-                        return item.tanggal_penjualan;
-                    }
-                )
-                .filter(Boolean)
-                .sort();
-
+    if (inputMulai && inputAkhir) {
+        periode = `${formatTanggalPenjualan(inputMulai)} - ${formatTanggalPenjualan(inputAkhir)}`;
+    } else if (inputMulai) {
+        periode = `Mulai ${formatTanggalPenjualan(inputMulai)}`;
+    } else if (inputAkhir) {
+        periode = `Sampai ${formatTanggalPenjualan(inputAkhir)}`;
+    } else if (data.length > 0) {
+        const tanggal = data
+            .map(item => item.tanggal_penjualan)
+            .filter(Boolean)
+            .sort();
 
         if (tanggal.length > 0) {
-
-            const awal =
-                formatTanggalPenjualan(
-                    tanggal[0]
-                );
-
-
-            const akhir =
-                formatTanggalPenjualan(
-                    tanggal[tanggal.length - 1]
-                );
-
-
-            periode =
-                awal === akhir
-                    ? awal
-                    : `${awal} - ${akhir}`;
-
+            const awal = formatTanggalPenjualan(tanggal[0]);
+            const akhir = formatTanggalPenjualan(tanggal[tanggal.length - 1]);
+            periode = awal === akhir ? awal : `${awal} - ${akhir}`;
         }
-
     }
 
-
-    setText(
-        "penjualanPeriode",
-        periode
-    );
-
+    setText("penjualanPeriode", periode);
 }
 
 // =====================================================
@@ -24405,6 +24108,26 @@ function pengaturan() {
 
                 </button>
 
+
+                <!-- KARTU LOGOUT / KELUAR -->
+                <button
+                    class="settings-card"
+                    onclick="logoutSistem()"
+                    style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);"
+                >
+
+                    🚪
+
+                    <strong style="color: #ef4444;">
+                        Keluar Akun
+                    </strong>
+
+                    <span style="color: #ef4444;">
+                        Akhiri sesi sistem
+                    </span>
+
+                </button>
+
             </div>
 
         </div>
@@ -24448,65 +24171,40 @@ async function profilToko() {
 }
 
 // =====================================================
-// TAMPILKAN PROFIL TOKO
+// TAMPILKAN PROFIL TOKO (VERSI FORMAL & LENGKAP)
 // =====================================================
 
 async function tampilkanProfilToko() {
 
-    const container =
-        document.getElementById("profilTokoContainer");
-
+    const container = document.getElementById("profilTokoContainer");
     if (!container) return;
 
     const { data, error } = await supabaseClient
         .from("profil_toko")
         .select("*")
-        .order("id_profil", {
-            ascending: true
-        })
+        .order("id_profil", { ascending: true })
         .limit(1);
 
     if (error) {
-
-        console.error(
-            "Gagal mengambil profil toko:",
-            error
-        );
-
+        console.error("Gagal mengambil profil toko:", error);
         container.innerHTML = `
             <div class="alert alert-danger">
                 Gagal mengambil informasi toko.
             </div>
         `;
-
         return;
     }
-
 
     // =================================================
     // JIKA BELUM ADA PROFIL
     // =================================================
-
     if (!data || data.length === 0) {
-
         container.innerHTML = `
-
             <div class="profile-card">
-
                 <div class="empty-state">
-
-                    <div class="icon">
-                        🏪
-                    </div>
-
-                    <h3>
-                        Belum Ada Informasi Toko
-                    </h3>
-
-                    <p>
-                        Silakan tambahkan informasi toko terlebih dahulu.
-                    </p>
-
+                    <div class="icon">🏪</div>
+                    <h3>Belum Ada Informasi Toko</h3>
+                    <p>Silakan tambahkan informasi entitas bisnis terlebih dahulu.</p>
                     <button
                         type="button"
                         class="btn btn-primary"
@@ -24514,77 +24212,79 @@ async function tampilkanProfilToko() {
                     >
                         ➕ Tambah Informasi Toko
                     </button>
-
                 </div>
-
             </div>
-
         `;
-
         return;
     }
 
-
     // =================================================
-    // JIKA SUDAH ADA PROFIL
+    // JIKA SUDAH ADA PROFIL (TAMPILAN RESMI PERUSAHAAN)
     // =================================================
-
     const profil = data[0];
 
     container.innerHTML = `
-
-        <div class="profile-card">
-
-            <h3>
-                🧸 ${escapeHTML(profil.nama_toko)}
-            </h3>
-
-            <p>
-                <strong>Nama Pemilik:</strong>
-                ${escapeHTML(profil.nama_pemilik || "-")}
-            </p>
-
-            <p>
-                <strong>Alamat:</strong>
-                ${escapeHTML(profil.alamat || "-")}
-            </p>
-
-            <p>
-                <strong>No. HP / WhatsApp:</strong>
-                ${escapeHTML(profil.no_hp || "-")}
-            </p>
-
-            <p>
-                <strong>Email:</strong>
-                ${escapeHTML(profil.email || "-")}
-            </p>
-
-
-            <div class="action-buttons">
-
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    onclick="editProfilToko(${profil.id_profil})"
-                >
-                    ✏️ Edit
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                    onclick="hapusProfilToko(${profil.id_profil})"
-                >
-                    🗑️ Hapus
-                </button>
-
+        <div class="profile-page-wrapper">
+            <!-- Header Atas: Info Subtitle & Tombol Aksi di Luar Kartu -->
+            <div class="profile-header-bar">
+                <div>
+                    <p class="profile-subtitle">Identitas resmi entitas dan rincian kontak operasional toko</p>
+                </div>
+                <div class="profile-actions-top">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="editProfilToko(${profil.id_profil})"
+                    >
+                        ✏️ Edit Profil
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-danger-soft"
+                        onclick="hapusProfilToko(${profil.id_profil})"
+                    >
+                        🗑️ Hapus
+                    </button>
+                </div>
             </div>
 
-        </div>
+            <!-- Kartu Entitas Perusahaan -->
+            <div class="profile-card-formal">
+                <!-- Kolom Kiri: Branding Perusahaan -->
+                <div class="profile-brand-side">
+                    <div class="profile-avatar-circle">
+                        <img src="../img/logo-ctoy.png" alt="Logo Perusahaan" class="profile-avatar-img">
+                    </div>
+                    <h3 class="brand-name">${escapeHTML(profil.nama_toko)}</h3>
+                    <span class="brand-badge">Sistem Persediaan Mainan</span>
+                </div>
 
+                <!-- Kolom Kanan: Rincian Data Legal & Operasional -->
+                <div class="profile-details-grid">
+                    <div class="profile-info-row">
+                        <span class="info-label">Nama Pemilik</span>
+                        <strong class="info-value">${escapeHTML(profil.nama_pemilik || "-")}</strong>
+                    </div>
+
+                    <div class="profile-info-row">
+                        <span class="info-label">Alamat Operasional</span>
+                        <strong class="info-value">${escapeHTML(profil.alamat || "-")}</strong>
+                    </div>
+
+                    <div class="profile-info-row">
+                        <span class="info-label">No. Telepon / WhatsApp</span>
+                        <strong class="info-value">${escapeHTML(profil.no_hp || "-")}</strong>
+                    </div>
+
+                    <div class="profile-info-row">
+                        <span class="info-label">Email Korespondensi</span>
+                        <strong class="info-value">${escapeHTML(profil.email || "-")}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
     `;
 }
-
 
 // =====================================================
 // TAMBAH PROFIL TOKO
@@ -26449,88 +26149,33 @@ function tampilkanJurnalUmum(
             </tr>
 
 
-            <!-- PAGINATION -->
-
+    <!-- PAGINATION JURNAL UMUM (PERSIS RETUR & LAPORAN) -->
             <tr>
-
-                <td
-                    colspan="8"
-                    style="
-                        padding: 15px;
-                        text-align: center;
-                    "
-                >
-
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            gap: 10px;
-                            flex-wrap: wrap;
-                        "
-                    >
-
+                <td colspan="8" style="padding: 18px 10px; border: none; background: transparent;">
+                    <div class="custom-pagination-container">
                         <button
                             type="button"
-                            class="btn-secondary"
-                            onclick="
-                                tampilkanJurnalUmum(
-                                    dataJurnalUmumTerfilter,
-                                    ${halamanJurnalUmum - 1}
-                                )
-                            "
-                            ${
-                                halamanJurnalUmum <= 1
-                                    ? "disabled"
-                                    : ""
-                            }
+                            class="btn btn-secondary pagination-nav-btn"
+                            onclick="tampilkanJurnalUmum(dataJurnalUmumTerfilter, ${halamanJurnalUmum - 1})"
+                            ${halamanJurnalUmum <= 1 ? "disabled" : ""}
                         >
-
                             ← Sebelumnya
-
                         </button>
 
-
-                        <span
-                            style="
-                                font-weight: 600;
-                                padding: 8px 14px;
-                            "
-                        >
-
-                            Halaman
-                            ${halamanJurnalUmum}
-                            dari
-                            ${totalHalaman}
-
+                        <span class="pagination-page-label">
+                            Halaman ${halamanJurnalUmum} dari ${totalHalaman}
                         </span>
 
-
                         <button
                             type="button"
-                            class="btn-primary"
-                            onclick="
-                                tampilkanJurnalUmum(
-                                    dataJurnalUmumTerfilter,
-                                    ${halamanJurnalUmum + 1}
-                                )
-                            "
-                            ${
-                                halamanJurnalUmum >= totalHalaman
-                                    ? "disabled"
-                                    : ""
-                            }
+                            class="btn btn-primary pagination-nav-btn"
+                            onclick="tampilkanJurnalUmum(dataJurnalUmumTerfilter, ${halamanJurnalUmum + 1})"
+                            ${halamanJurnalUmum >= totalHalaman ? "disabled" : ""}
                         >
-
                             Berikutnya →
-
                         </button>
-
                     </div>
-
                 </td>
-
             </tr>
 
         `;
@@ -30400,575 +30045,234 @@ async function neraca() {
 }
 
 // =====================================================
-// MUAT NERACA
+// MUAT NERACA (TOTAL ASET & PASIVA DIBINGKAI SAMA PERSIS)
 // =====================================================
 
 async function muatNeraca() {
+    const container = document.getElementById("hasilNeraca");
+    if (!container || !cekSupabase()) return;
 
-    const container =
-        document.getElementById("hasilNeraca");
-
-    if (!container) {
-        return;
-    }
-
-    if (!cekSupabase()) {
-        return;
-    }
-
-    const tanggal =
-        document.getElementById("tanggalNeraca").value;
-
+    const tanggal = document.getElementById("tanggalNeraca").value;
     if (!tanggal) {
-
         alert("Silakan pilih tanggal neraca.");
-
         return;
     }
 
-
-    // =================================================
-    // AMBIL JURNAL SAMPAI TANGGAL NERACA
-    // =================================================
-
-    const { data, error } =
-        await supabaseClient
-            .from("jurnal_umum")
-            .select(`
-                id_jurnal,
-                tanggal_jurnal,
-                debit,
-                kredit,
-                id_akun,
-                akun (
-                    kode_akun,
-                    nama_akun,
-                    jenis_akun
-                )
-            `)
-            .lte("tanggal_jurnal", tanggal)
-            .order("tanggal_jurnal", {
-                ascending: true
-            });
-
+    const { data, error } = await supabaseClient
+        .from("jurnal_umum")
+        .select(`
+            id_jurnal,
+            tanggal_jurnal,
+            debit,
+            kredit,
+            id_akun,
+            akun (
+                kode_akun,
+                nama_akun,
+                jenis_akun
+            )
+        `)
+        .lte("tanggal_jurnal", tanggal)
+        .order("tanggal_jurnal", { ascending: true });
 
     if (error) {
-
-        console.error(
-            "ERROR NERACA:",
-            error
-        );
-
+        console.error("ERROR NERACA:", error);
         container.innerHTML = `
-
             <div class="laporan-empty">
-
-                <h3>
-                    Gagal mengambil data
-                </h3>
-
-                <p>
-                    ${escapeHtml(error.message)}
-                </p>
-
+                <h3>Gagal mengambil data</h3>
+                <p>${escapeHtml(error.message)}</p>
             </div>
-
         `;
-
         return;
     }
 
-
-    // =================================================
-    // HITUNG SALDO AKUN
-    // =================================================
-
+    // Hitung Saldo Tiap Akun
     const saldoAkun = {};
 
-
     if (data && data.length > 0) {
-
         data.forEach(function(item) {
-
             const akun = item.akun;
+            if (!akun) return;
 
-            if (!akun) {
-                return;
-            }
-
-            const kode =
-                akun.kode_akun;
-
-            const debit =
-                Number(item.debit || 0);
-
-            const kredit =
-                Number(item.kredit || 0);
-
+            const kode = akun.kode_akun;
+            const debit = Number(item.debit || 0);
+            const kredit = Number(item.kredit || 0);
 
             if (!saldoAkun[kode]) {
-
                 saldoAkun[kode] = {
-
                     kode: kode,
-
                     nama: akun.nama_akun,
-
                     jenis: akun.jenis_akun,
-
                     saldo: 0
-
                 };
-
             }
 
-
-            // ASET
-
-            if (
-                akun.jenis_akun === "ASET"
-            ) {
-
-                saldoAkun[kode].saldo +=
-                    debit - kredit;
-
+            if (akun.jenis_akun === "ASET") {
+                saldoAkun[kode].saldo += (debit - kredit);
+            } else if (akun.jenis_akun === "KEWAJIBAN" || akun.jenis_akun === "EKUITAS") {
+                saldoAkun[kode].saldo += (kredit - debit);
             }
-
-
-            // KEWAJIBAN
-
-            else if (
-                akun.jenis_akun === "KEWAJIBAN"
-            ) {
-
-                saldoAkun[kode].saldo +=
-                    kredit - debit;
-
-            }
-
-
-            // EKUITAS
-
-            else if (
-                akun.jenis_akun === "EKUITAS"
-            ) {
-
-                saldoAkun[kode].saldo +=
-                    kredit - debit;
-
-            }
-
         });
-
     }
-
-
-    // =================================================
-    // FUNGSI AMBIL SALDO AKUN
-    // =================================================
 
     function ambilSaldo(kode) {
-
-        if (!saldoAkun[kode]) {
-            return 0;
-        }
-
-        return Number(
-            saldoAkun[kode].saldo || 0
-        );
-
+        return Number(saldoAkun[kode]?.saldo || 0);
     }
 
+    const kas = ambilSaldo("1-1000");
+    const piutang = ambilSaldo("1-1200");
+    const persediaan = ambilSaldo("1-1100");
+    const utang = ambilSaldo("2-1000");
+    const modal = ambilSaldo("3-1000");
 
-    // =================================================
-    // ASET
-    // =================================================
-
-    const kas =
-        ambilSaldo("1-1000");
-
-    const piutang =
-        ambilSaldo("1-1200");
-
-    const persediaan =
-        ambilSaldo("1-1100");
-
-
-    // =================================================
-    // KEWAJIBAN
-    // =================================================
-
-    const utang =
-        ambilSaldo("2-1000");
-
-
-    // =================================================
-    // EKUITAS
-    // =================================================
-
-    const modal =
-        ambilSaldo("3-1000");
-
-
-    // =================================================
-    // HITUNG LABA / RUGI BERJALAN
-    // =================================================
-
-    let penjualan = 0;
-
-    let hpp = 0;
-
-    let bebanPenyesuaian = 0;
-
+    let totalPendapatanBersih = 0;
+    let totalBeban = 0;
 
     if (data && data.length > 0) {
-
         data.forEach(function(item) {
-
             const akun = item.akun;
+            if (!akun) return;
 
-            if (!akun) {
-                return;
+            const debit = Number(item.debit || 0);
+            const kredit = Number(item.kredit || 0);
+
+            if (akun.kode_akun === "4-1000") {
+                totalPendapatanBersih += (kredit - debit);
+            } else if (akun.kode_akun === "4-1100") {
+                totalPendapatanBersih -= (debit - kredit);
+            } else if (akun.kode_akun === "5-1000" || akun.kode_akun === "5-1100") {
+                totalBeban += (debit - kredit);
             }
-
-            const debit =
-                Number(item.debit || 0);
-
-            const kredit =
-                Number(item.kredit || 0);
-
-
-            // PENJUALAN
-
-            if (
-                akun.kode_akun === "4-1000"
-            ) {
-
-                penjualan +=
-                    kredit - debit;
-
-            }
-
-
-            // HPP
-
-            if (
-                akun.kode_akun === "5-1000"
-            ) {
-
-                hpp +=
-                    debit - kredit;
-
-            }
-
-
-            // BEBAN PENYESUAIAN
-
-            if (
-                akun.kode_akun === "5-1100"
-            ) {
-
-                bebanPenyesuaian +=
-                    debit - kredit;
-
-            }
-
         });
-
     }
 
+    const labaRugi = totalPendapatanBersih - totalBeban;
 
-    const labaRugi =
-        penjualan -
-        hpp -
-        bebanPenyesuaian;
+    const totalAset = kas + piutang + persediaan;
+    const totalKewajiban = utang;
+    const totalEkuitas = modal + labaRugi;
+    const totalPasiva = totalKewajiban + totalEkuitas;
 
+    const isBalance = Math.abs(totalAset - totalPasiva) < 1;
 
-    // =================================================
-    // TOTAL ASET
-    // =================================================
+    // Indikator Balance Mengambang di Pojok Kanan Bawah
+    const badgeLama = document.getElementById("indikatorBalanceNeraca");
+    if (badgeLama) badgeLama.remove();
 
-    const totalAset =
-        kas +
-        piutang +
-        persediaan;
+    const statusPill = document.createElement("div");
+    statusPill.id = "indikatorBalanceNeraca";
+    statusPill.style.position = "fixed";
+    statusPill.style.bottom = "24px";
+    statusPill.style.right = "24px";
+    statusPill.style.zIndex = "9999";
+    statusPill.style.padding = "10px 18px";
+    statusPill.style.borderRadius = "30px";
+    statusPill.style.fontWeight = "bold";
+    statusPill.style.fontSize = "13px";
+    statusPill.style.boxShadow = "0 4px 15px rgba(0,0,0,0.15)";
+    statusPill.style.display = "flex";
+    statusPill.style.alignItems = "center";
+    statusPill.style.gap = "8px";
 
+    if (isBalance) {
+        statusPill.style.background = "#e6f4ea";
+        statusPill.style.color = "#137333";
+        statusPill.style.border = "1px solid #ceead6";
+        statusPill.innerHTML = `<span>✓</span> <span>Neraca Seimbang (Balance)</span>`;
+    } else {
+        statusPill.style.background = "#fce8e6";
+        statusPill.style.color = "#c5221f";
+        statusPill.style.border = "1px solid #fad2cf";
+        statusPill.innerHTML = `<span>⚠</span> <span>Tidak Seimbang (Selisih: ${formatRupiah(Math.abs(totalAset - totalPasiva))})</span>`;
+    }
+    document.body.appendChild(statusPill);
 
-    // =================================================
-    // TOTAL KEWAJIBAN
-    // =================================================
-
-    const totalKewajiban =
-        utang;
-
-
-    // =================================================
-    // TOTAL EKUITAS
-    // =================================================
-
-    const totalEkuitas =
-        modal +
-        labaRugi;
-
-
-    // =================================================
-    // TOTAL KEWAJIBAN + EKUITAS
-    // =================================================
-
-    const totalPasiva =
-        totalKewajiban +
-        totalEkuitas;
-
-
-    // =================================================
-    // TAMPILKAN NERACA
-    // =================================================
-
+    // Template Laporan
     container.innerHTML = `
-
         <div class="laporan-paper">
 
-            <!-- HEADER -->
-
+            <!-- HEADER TOKO -->
             <div class="laporan-company">
-
                 <div>
-
-                    <div class="laporan-company-name">
-                        TOKO MAINAN
-                    </div>
-
-                    <div class="laporan-company-subtitle">
-                        SISTEM AKUNTANSI PERSEDIAAN
-                    </div>
-
+                    <div class="laporan-company-name">TOKO MAINAN</div>
+                    <div class="laporan-company-subtitle">SISTEM AKUNTANSI PERSEDIAAN</div>
                 </div>
-
-                <div class="laporan-label">
-                    LAPORAN KEUANGAN
-                </div>
-
+                <div class="laporan-label">LAPORAN KEUANGAN</div>
             </div>
 
-
-            <!-- JUDUL -->
-
-            <div class="laporan-title">
-
-                <h2>
-                    NERACA
-                </h2>
-
-                <div>
-                    Per tanggal ${formatTanggal(tanggal)}
-                </div>
-
+            <!-- JUDUL DI TENGAH -->
+            <div class="laporan-title" style="text-align: center; padding: 20px 0;">
+                <h2 style="margin: 0 0 6px 0; font-size: 20px; letter-spacing: 1px;">NERACA</h2>
+                <div style="font-size: 13px; color: #555;">Per tanggal ${formatTanggal(tanggal)}</div>
             </div>
 
-
-            <!-- ================================================= -->
             <!-- ASET -->
-            <!-- ================================================= -->
-
-            <div class="laporan-section">
-
-                <div class="laporan-section-title">
-                    ASET
-                </div>
-
-
+            <div class="laporan-section" style="margin-bottom: 12px;">
+                <div class="laporan-section-title">ASET</div>
                 <div class="laporan-row">
-
-                    <span>
-                        Kas
-                    </span>
-
-                    <span>
-                        ${formatRupiah(kas)}
-                    </span>
-
+                    <span>Kas</span>
+                    <span>${formatRupiah(kas)}</span>
                 </div>
-
-
                 <div class="laporan-row">
-
-                    <span>
-                        Piutang Usaha
-                    </span>
-
-                    <span>
-                        ${formatRupiah(piutang)}
-                    </span>
-
+                    <span>Piutang Usaha</span>
+                    <span>${formatRupiah(piutang)}</span>
                 </div>
-
-
                 <div class="laporan-row">
-
-                    <span>
-                        Persediaan Barang
-                    </span>
-
-                    <span>
-                        ${formatRupiah(persediaan)}
-                    </span>
-
+                    <span>Persediaan Barang</span>
+                    <span>${formatRupiah(persediaan)}</span>
                 </div>
-
-
-                <!-- TOTAL ASET -->
-
-                <div class="neraca-total-akhir">
-
-                    <span>
-                        TOTAL ASET
-                    </span>
-
-                    <strong>
-                        ${formatRupiah(totalAset)}
-                    </strong>
-
-                </div>
-
             </div>
 
+            <!-- BINGKAI TOTAL ASET (KEMBAR DENGAN BINGKAI TOTAL PASIVA) -->
+            <div class="laporan-net-income" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 24px; border: 2px solid #333; border-radius: 6px; background: #f5f5f5; font-weight: bold; font-size: 13px;">
+                <span>TOTAL ASET</span>
+                <strong>${formatRupiah(totalAset)}</strong>
+            </div>
 
-            <!-- ================================================= -->
             <!-- KEWAJIBAN -->
-            <!-- ================================================= -->
-
             <div class="laporan-section">
-
-                <div class="laporan-section-title">
-                    KEWAJIBAN
-                </div>
-
-
+                <div class="laporan-section-title">KEWAJIBAN</div>
                 <div class="laporan-row">
-
-                    <span>
-                        Utang Usaha
-                    </span>
-
-                    <span>
-                        ${formatRupiah(utang)}
-                    </span>
-
+                    <span>Utang Usaha</span>
+                    <span>${formatRupiah(utang)}</span>
                 </div>
-
-
-                <!-- TOTAL KEWAJIBAN -->
-
-                <div class="laporan-total-row">
-
-                    <span>
-                        TOTAL KEWAJIBAN
-                    </span>
-
-                    <strong>
-                        ${formatRupiah(totalKewajiban)}
-                    </strong>
-
+                <div class="laporan-total-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fafafa; border-top: 2px solid #555;">
+                    <span>TOTAL KEWAJIBAN</span>
+                    <strong>${formatRupiah(totalKewajiban)}</strong>
                 </div>
-
             </div>
 
-
-            <!-- ================================================= -->
             <!-- EKUITAS -->
-            <!-- ================================================= -->
-
             <div class="laporan-section">
-
-                <div class="laporan-section-title">
-                    EKUITAS
-                </div>
-
-
+                <div class="laporan-section-title">EKUITAS</div>
                 <div class="laporan-row">
-
-                    <span>
-                        Modal
-                    </span>
-
-                    <span>
-                        ${formatRupiah(modal)}
-                    </span>
-
+                    <span>Modal</span>
+                    <span>${formatRupiah(modal)}</span>
                 </div>
-
-
                 <div class="laporan-row">
-
-                    <span>
-                        Laba / (Rugi) Berjalan
-                    </span>
-
-                    <span>
-                        ${formatRupiah(labaRugi)}
-                    </span>
-
+                    <span>Laba / (Rugi) Berjalan</span>
+                    <span>${formatRupiah(labaRugi)}</span>
                 </div>
-
-
-                <!-- TOTAL EKUITAS -->
-
-                <div class="laporan-total-row">
-
-                    <span>
-                        TOTAL EKUITAS
-                    </span>
-
-                    <strong>
-                        ${formatRupiah(totalEkuitas)}
-                    </strong>
-
+                <div class="laporan-total-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fafafa; border-top: 2px solid #555;">
+                    <span>TOTAL EKUITAS</span>
+                    <strong>${formatRupiah(totalEkuitas)}</strong>
                 </div>
-
             </div>
 
-
-            <!-- ================================================= -->
-            <!-- TOTAL KEWAJIBAN + EKUITAS -->
-            <!-- ================================================= -->
-
-            <div class="neraca-total-akhir">
-
-                <span>
-                    TOTAL KEWAJIBAN + EKUITAS
-                </span>
-
-                <strong>
-                    ${formatRupiah(totalPasiva)}
-                </strong>
-
+            <!-- BINGKAI TOTAL KEWAJIBAN + EKUITAS -->
+            <div class="laporan-net-income" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-top: 20px; border: 2px solid #333; border-radius: 6px; background: #f5f5f5; font-weight: bold; font-size: 13px;">
+                <span>TOTAL KEWAJIBAN + EKUITAS</span>
+                <strong>${formatRupiah(totalPasiva)}</strong>
             </div>
 
-
-            <!-- ================================================= -->
             <!-- FOOTER -->
-            <!-- ================================================= -->
-
             <div class="laporan-footer">
-
-                <span>
-                    Sistem Akuntansi Persediaan
-                </span>
-
-                <span>
-                    ${formatTanggal(
-                        new Date()
-                            .toISOString()
-                            .slice(0, 10)
-                    )}
-                </span>
-
+                <span>Sistem Akuntansi Persediaan</span>
+                <span>${formatTanggal(new Date().toISOString().slice(0, 10))}</span>
             </div>
 
         </div>
-
     `;
-
 }
 
 // =====================================================
@@ -30976,48 +30280,22 @@ async function muatNeraca() {
 // =====================================================
 
 function resetNeraca() {
+    const tanggal = document.getElementById("tanggalNeraca");
+    const hasil = document.getElementById("hasilNeraca");
+    const badge = document.getElementById("indikatorBalanceNeraca");
 
-    const tanggal =
-        document.getElementById("tanggalNeraca");
-
-    const hasil =
-        document.getElementById("hasilNeraca");
-
-
-    if (tanggal) {
-
-        tanggal.value = "";
-
-    }
-
-
+    if (badge) badge.remove();
+    if (tanggal) tanggal.value = "";
     if (hasil) {
-
         hasil.innerHTML = `
-
             <div class="laporan-empty">
-
-                <div class="laporan-empty-icon">
-                    📊
-                </div>
-
-                <h3>
-                    Tanggal Belum Dipilih
-                </h3>
-
-                <p>
-                    Pilih tanggal neraca untuk
-                    menampilkan laporan.
-                </p>
-
+                <div class="laporan-empty-icon">📊</div>
+                <h3>Tanggal Belum Dipilih</h3>
+                <p>Pilih tanggal neraca untuk menampilkan laporan.</p>
             </div>
-
         `;
-
     }
-
 }
-
 
 // =====================================================
 // CETAK / PREVIEW NERACA
@@ -31392,7 +30670,6 @@ function cetakNeraca() {
 
                 }
 
-
                 @media print {
 
                     body {
@@ -31409,7 +30686,6 @@ function cetakNeraca() {
                         display: none;
 
                     }
-
 
                     .paper {
 
@@ -31431,13 +30707,11 @@ function cetakNeraca() {
 
         </head>
 
-
         <body>
 
             <div class="paper">
 
                 ${laporan.innerHTML}
-
 
                 <div class="preview-buttons">
 
@@ -31447,7 +30721,6 @@ function cetakNeraca() {
                     >
                         ✕ Tutup Preview
                     </button>
-
 
                     <button
                         class="btn-print"
@@ -31466,7 +30739,1249 @@ function cetakNeraca() {
 
     `);
 
-
     jendela.document.close();
 
 }
+
+// =====================================================
+// MODUL RETUR PEMBELIAN (PENGEMBALIAN KE PEMASOK)
+// =====================================================
+
+async function returPembelian() {
+    ubahJudul("Retur Pembelian");
+    aktifkanMenu("Retur Pembelian");
+
+    const isi = document.getElementById("isi");
+    if (!cekSupabase()) return;
+
+    isi.innerHTML = `
+        <div class="content-box">
+            <div class="page-header">
+                <div>
+                    <h2>Retur Pembelian</h2>
+                    <p>Pengembalian barang rusak atau tidak sesuai ke pemasok.</p>
+                </div>
+                <button class="btn-primary" onclick="formReturPembelianBaru()">
+                    + Retur Pembelian Baru
+                </button>
+            </div>
+            <div id="tabelReturPembelian">
+                <div class="empty-state">Memuat data retur pembelian...</div>
+            </div>
+        </div>
+    `;
+
+    await tampilkanDataReturPembelian();
+}
+
+// =====================================================
+// DATA & STATE PAGINATION RETUR PEMBELIAN
+// =====================================================
+let dataReturBeliSemua = [];
+let halamanReturBeli = 1;
+const dataPerHalamanReturBeli = 10;
+
+async function tampilkanDataReturPembelian() {
+    const container = document.getElementById("tabelReturPembelian");
+    if (!container || !cekSupabase()) return;
+
+    const { data, error } = await supabaseClient
+        .from("retur_pembelian")
+        .select(`
+            id_retur_pembelian,
+            nomor_retur_pembelian,
+            tanggal_retur,
+            jumlah,
+            harga_beli,
+            total_retur,
+            alasan,
+            barang ( kode_barang, nama_barang, satuan )
+        `)
+        .order("tanggal_retur", { ascending: false });
+
+    if (error) {
+        container.innerHTML = `<div class="empty-state">Gagal mengambil data: ${escapeHtml(error.message)}</div>`;
+        return;
+    }
+
+    dataReturBeliSemua = Array.isArray(data) ? data : [];
+    halamanReturBeli = 1;
+    renderTabelReturPembelian(1);
+}
+
+function renderTabelReturPembelian(halaman = 1) {
+    const container = document.getElementById("tabelReturPembelian");
+    if (!container) return;
+
+    if (dataReturBeliSemua.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada riwayat retur pembelian.</div>`;
+        return;
+    }
+
+    const totalHalaman = Math.max(1, Math.ceil(dataReturBeliSemua.length / dataPerHalamanReturBeli));
+    if (halaman < 1) halaman = 1;
+    if (halaman > totalHalaman) halaman = totalHalaman;
+    halamanReturBeli = halaman;
+
+    const mulai = (halaman - 1) * dataPerHalamanReturBeli;
+    const selesai = mulai + dataPerHalamanReturBeli;
+    const dataHalaman = dataReturBeliSemua.slice(mulai, selesai);
+
+    let html = `
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>No. Retur</th>
+                        <th>Tanggal</th>
+                        <th>Barang</th>
+                        <th>Jumlah</th>
+                        <th>Harga Beli</th>
+                        <th>Total Nilai</th>
+                        <th>Alasan</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    dataHalaman.forEach((item, idx) => {
+        const brg = item.barang || {};
+        html += `
+            <tr>
+                <td>${mulai + idx + 1}</td>
+                <td><strong>${escapeHtml(item.nomor_retur_pembelian)}</strong></td>
+                <td>${formatTanggal(item.tanggal_retur)}</td>
+                <td>${escapeHtml(brg.kode_barang || "-")} - ${escapeHtml(brg.nama_barang || "-")}</td>
+                <td>${item.jumlah} ${escapeHtml(brg.satuan || "")}</td>
+                <td>${formatRupiah(item.harga_beli)}</td>
+                <td><strong>${formatRupiah(item.total_retur)}</strong></td>
+                <td>${escapeHtml(item.alasan || "-")}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 18px; padding: 10px;">
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="renderTabelReturPembelian(${halamanReturBeli - 1})"
+                ${halamanReturBeli <= 1 ? "disabled style='opacity: 0.5; cursor: not-allowed;'" : ""}
+            >
+                ← Sebelumnya
+            </button>
+
+            <span style="font-weight: 700; font-size: 13px; color: var(--text);">
+                Halaman ${halamanReturBeli} dari ${totalHalaman}
+            </span>
+
+            <button
+                type="button"
+                class="btn-primary"
+                onclick="renderTabelReturPembelian(${halamanReturBeli + 1})"
+                ${halamanReturBeli >= totalHalaman ? "disabled style='opacity: 0.5; cursor: not-allowed;'" : ""}
+            >
+                Berikutnya →
+            </button>
+        </div>
+    `;
+
+    container.innerHTML = html;
+} 
+
+// FORM RETUR PEMBELIAN (DENGAN PENCARIAN, SCROLL, DAN TOMBOL TUTUP)
+async function formReturPembelianBaru() {
+    if (!cekSupabase()) return;
+
+    ubahJudul("Retur Pembelian Baru");
+    const nomor = await buatNomorTransaksi("retur_pembelian", "nomor_retur_pembelian", "RPB-");
+
+    const { data: daftarBeli, error } = await supabaseClient
+        .from("pembelian")
+        .select(`
+            id_pembelian,
+            nomor_pembelian,
+            tanggal_pembelian,
+            total_pembelian,
+            pemasok ( nama_pemasok ),
+            detail_pembelian (
+                id_barang,
+                jumlah,
+                harga_beli,
+                barang ( nama_barang, kode_barang, satuan )
+            )
+        `)
+        .order("tanggal_pembelian", { ascending: false });
+
+    if (error) {
+        alert("Gagal memuat riwayat pembelian: " + error.message);
+        return;
+    }
+
+    window.listPembelianUntukRetur = daftarBeli || [];
+
+    document.getElementById("isi").innerHTML = `
+        <div class="content-box">
+            <div class="page-header">
+                <div>
+                    <h2>Retur Pembelian Baru</h2>
+                    <p>Pilih faktur pembelian asal barang yang ingin dikembalikan.</p>
+                </div>
+            </div>
+            <form onsubmit="simpanReturPembelian(event)">
+                <div class="form-grid">
+                    <!-- NOMOR RETUR -->
+                    <div class="form-group">
+                        <label>Nomor Retur</label>
+                        <input type="text" id="nomorReturBeli" value="${nomor}" readonly>
+                    </div>
+
+                    <!-- TANGGAL RETUR -->
+                    <div class="form-group">
+                        <label>Tanggal Retur</label>
+                        <input type="date" id="tanggalReturBeli" value="${tanggalHariIniInput()}" required>
+                    </div>
+
+                    <!-- PILIH FAKTUR PEMBELIAN -->
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Pilih Faktur Pembelian</label>
+                        <div class="lookup-wrapper" id="wrapperFakturBeli">
+                            <div class="lookup-input-wrap" style="position: relative; display: flex; align-items: center;">
+                                <input
+                                    type="text"
+                                    id="cariFakturReturBeli"
+                                    class="lookup-input"
+                                    autocomplete="off"
+                                    placeholder="🔍 Ketik nomor faktur (misal 'PB-') atau klik untuk memilih..."
+                                    oninput="filterDaftarFakturBeli(this.value)"
+                                    onfocus="filterDaftarFakturBeli(this.value)"
+                                    style="padding-right: 40px;"
+                                >
+                                <button
+                                    type="button"
+                                    onclick="batalPilihFakturBeli()"
+                                    title="Tutup daftar"
+                                    style="position: absolute; right: 10px; background: none; border: none; font-size: 14px; cursor: pointer; color: #888;"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            <!-- DAFTAR SCROLL KANAN (MAKSIMAL 5 BARIS) -->
+                            <div
+                                id="hasilDropdownFakturBeli"
+                                class="lookup-results"
+                                style="max-height: 250px; overflow-y: auto; overflow-x: hidden;"
+                            ></div>
+                        </div>
+
+                        <!-- KARTU DETAIL SETELAH FAKTUR DIPILIH -->
+                        <div id="detailFakturTerpilihBeli" class="lookup-selected"></div>
+
+                        <input type="hidden" id="idPembelianTerpilih">
+                        <input type="hidden" id="idBarangReturBeli">
+                    </div>
+
+                    <!-- JUMLAH RETUR -->
+                    <div class="form-group">
+                        <label>Jumlah yang Diretur</label>
+                        <input type="number" id="jumlahReturBeli" min="1" value="1" oninput="hitungTotalReturBeli()" required disabled>
+                    </div>
+
+                    <!-- HARGA BELI SATUAN -->
+                    <div class="form-group">
+                        <label>Harga Beli Satuan</label>
+                        <input type="number" id="hargaReturBeli" value="0" readonly>
+                    </div>
+
+                    <!-- ALASAN -->
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Alasan Pengembalian</label>
+                        <textarea id="alasanReturBeli" rows="2" placeholder="Contoh: Barang cacat dari pabrik atau tidak sesuai pesanan" required></textarea>
+                    </div>
+                </div>
+
+                <!-- TOTAL NILAI -->
+                <div class="transaction-summary">
+                    <div class="transaction-summary-row transaction-summary-total">
+                        <span>Total Nilai Retur</span>
+                        <strong id="ringkasTotalReturBeli">Rp 0</strong>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="returPembelian()">Batal</button>
+                    <button type="submit" class="btn-primary" id="btnSimpanReturBeli" disabled>Simpan Retur Pembelian</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    // Klik di luar daftar untuk menutup otomatis
+    document.removeEventListener("click", tanganiKlikLuarFaktur);
+    setTimeout(() => {
+        document.addEventListener("click", tanganiKlikLuarFaktur);
+    }, 100);
+}
+
+function tanganiKlikLuarFaktur(event) {
+    const wrapper = document.getElementById("wrapperFakturBeli");
+    const container = document.getElementById("hasilDropdownFakturBeli");
+    if (wrapper && container && !wrapper.contains(event.target)) {
+        container.classList.remove("open");
+    }
+}
+
+function batalPilihFakturBeli() {
+    const inputCari = document.getElementById("cariFakturReturBeli");
+    const container = document.getElementById("hasilDropdownFakturBeli");
+    const detailBox = document.getElementById("detailFakturTerpilihBeli");
+    const inputJumlah = document.getElementById("jumlahReturBeli");
+    const btnSimpan = document.getElementById("btnSimpanReturBeli");
+
+    if (inputCari) inputCari.value = "";
+    if (container) container.classList.remove("open");
+    if (detailBox) {
+        detailBox.innerHTML = "";
+        detailBox.classList.remove("show");
+    }
+
+    document.getElementById("idPembelianTerpilih").value = "";
+    document.getElementById("idBarangReturBeli").value = "";
+    document.getElementById("hargaReturBeli").value = 0;
+
+    if (inputJumlah) {
+        inputJumlah.value = 1;
+        inputJumlah.disabled = true;
+    }
+    if (btnSimpan) btnSimpan.disabled = true;
+
+    hitungTotalReturBeli();
+}
+
+function filterDaftarFakturBeli(keyword) {
+    const container = document.getElementById("hasilDropdownFakturBeli");
+    if (!container) return;
+
+    const cari = String(keyword || "").trim().toLowerCase();
+    const daftar = window.listPembelianUntukRetur || [];
+
+    if (daftar.length === 0) {
+        container.innerHTML = `<div class="lookup-message">Belum ada riwayat transaksi pembelian.</div>`;
+        container.classList.add("open");
+        return;
+    }
+
+    const filtered = daftar.filter(item => {
+        const noBeli = String(item.nomor_pembelian || "").toLowerCase();
+        const pemasok = String(item.pemasok?.nama_pemasok || "").toLowerCase();
+        const detail = item.detail_pembelian?.[0] || {};
+        const barang = String(detail.barang?.nama_barang || "").toLowerCase();
+
+        return noBeli.includes(cari) || pemasok.includes(cari) || barang.includes(cari);
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="lookup-message">Faktur tidak ditemukan.</div>`;
+        container.classList.add("open");
+        return;
+    }
+
+    let listHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: #fafafa; border-bottom: 1px solid #eee; font-size: 11px; color: #666;">
+            <span>Daftar Faktur Pembelian</span>
+            <span onclick="document.getElementById('hasilDropdownFakturBeli').classList.remove('open')" style="cursor: pointer; font-weight: bold; color: #d00;">✕ Tutup</span>
+        </div>
+    `;
+
+    listHTML += filtered.map((item, idx) => {
+        const detail = item.detail_pembelian?.[0] || {};
+        const brg = detail.barang || {};
+        return `
+            <button type="button" class="lookup-result" onclick="pilihSatuFakturBeli(${idx})">
+                <div class="lookup-result-code">🧾 ${escapeHtml(item.nomor_pembelian)} (${formatTanggal(item.tanggal_pembelian)})</div>
+                <div class="lookup-result-name">Pemasok: ${escapeHtml(item.pemasok?.nama_pemasok || "-")}</div>
+                <div class="lookup-result-info">
+                    Barang: <strong>${escapeHtml(brg.nama_barang || "-")}</strong> | Beli: ${detail.jumlah || 0} ${escapeHtml(brg.satuan || "Unit")} | Harga: ${formatRupiah(detail.harga_beli || 0)}
+                </div>
+            </button>
+        `;
+    }).join("");
+
+    container.innerHTML = listHTML;
+    window.cacheFakturTerfilter = filtered;
+    container.classList.add("open");
+}
+
+function pilihSatuFakturBeli(index) {
+    const item = window.cacheFakturTerfilter?.[index];
+    if (!item) return;
+
+    const detail = item.detail_pembelian?.[0] || {};
+    const brg = detail.barang || {};
+
+    document.getElementById("cariFakturReturBeli").value = `${item.nomor_pembelian} - ${item.pemasok?.nama_pemasok || ""}`;
+    document.getElementById("idPembelianTerpilih").value = item.id_pembelian;
+    document.getElementById("idBarangReturBeli").value = detail.id_barang;
+    document.getElementById("hargaReturBeli").value = Number(detail.harga_beli || 0);
+
+    const inputJumlah = document.getElementById("jumlahReturBeli");
+    inputJumlah.disabled = false;
+    inputJumlah.max = detail.jumlah || 1;
+    inputJumlah.value = 1;
+
+    document.getElementById("btnSimpanReturBeli").disabled = false;
+
+    const detailBox = document.getElementById("detailFakturTerpilihBeli");
+    detailBox.innerHTML = `
+        <div class="lookup-selected-title">📦 ${escapeHtml(brg.nama_barang || "-")} (${escapeHtml(brg.kode_barang || "-")})</div>
+        <div class="lookup-selected-info">
+            Faktur: <strong>${escapeHtml(item.nomor_pembelian)}</strong> | Pemasok: <strong>${escapeHtml(item.pemasok?.nama_pemasok || "-")}</strong><br>
+            Jumlah Pembelian Asal: <strong>${detail.jumlah || 0} ${escapeHtml(brg.satuan || "Unit")}</strong> (Maksimal jumlah yang bisa diretur)<br>
+            Harga Beli Satuan: <strong>${formatRupiah(detail.harga_beli || 0)}</strong>
+        </div>
+    `;
+    detailBox.classList.add("show");
+
+    document.getElementById("hasilDropdownFakturBeli").classList.remove("open");
+    hitungTotalReturBeli();
+}
+
+function hitungTotalReturBeli() {
+    const jml = Number(document.getElementById("jumlahReturBeli")?.value || 0);
+    const hrg = Number(document.getElementById("hargaReturBeli")?.value || 0);
+    document.getElementById("ringkasTotalReturBeli").textContent = formatRupiah(jml * hrg);
+}
+
+async function simpanReturPembelian(e) {
+    e.preventDefault();
+    if (!cekSupabase()) return;
+
+    const nomor = document.getElementById("nomorReturBeli").value;
+    const tanggal = document.getElementById("tanggalReturBeli").value;
+    const idPembelian = Number(document.getElementById("idPembelianTerpilih").value);
+    const idBarang = Number(document.getElementById("idBarangReturBeli").value);
+
+    const jumlah = Number(document.getElementById("jumlahReturBeli").value);
+    const harga = Number(document.getElementById("hargaReturBeli").value);
+    const alasan = document.getElementById("alasanReturBeli").value.trim();
+    const total = jumlah * harga;
+
+    if (!idBarang || !idPembelian) {
+        alert("Silakan pilih faktur pembelian terlebih dahulu.");
+        return;
+    }
+
+    const { data: brgData } = await supabaseClient
+        .from("barang")
+        .select("stok")
+        .eq("id_barang", idBarang)
+        .single();
+
+    const stokSekarang = Number(brgData?.stok || 0);
+
+    if (jumlah > stokSekarang) {
+        alert("Jumlah retur tidak boleh melebihi stok yang ada di gudang!");
+        return;
+    }
+
+    const { data: akunList } = await supabaseClient
+        .from("akun")
+        .select("id_akun, kode_akun")
+        .in("kode_akun", ["1-1100", "2-1000"]);
+
+    const akunPersediaan = akunList?.find(a => a.kode_akun === "1-1100");
+    const akunUtang = akunList?.find(a => a.kode_akun === "2-1000");
+
+    if (!akunPersediaan || !akunUtang) {
+        alert("Akun akuntansi (Persediaan atau Utang) belum lengkap di database.");
+        return;
+    }
+
+    const { error: errRetur } = await supabaseClient.from("retur_pembelian").insert([{
+        nomor_retur_pembelian: nomor,
+        tanggal_retur: tanggal,
+        id_pembelian: idPembelian,
+        id_barang: idBarang,
+        jumlah: jumlah,
+        harga_beli: harga,
+        total_retur: total,
+        alasan: alasan || null
+    }]);
+
+    if (errRetur) {
+        alert("Gagal menyimpan retur pembelian: " + errRetur.message);
+        return;
+    }
+
+    await supabaseClient
+        .from("barang")
+        .update({ stok: stokSekarang - jumlah })
+        .eq("id_barang", idBarang);
+
+    await supabaseClient.from("jurnal_umum").insert([
+        {
+            tanggal_jurnal: tanggal,
+            nomor_bukti: nomor,
+            sumber_transaksi: "RETUR PEMBELIAN",
+            id_akun: akunUtang.id_akun,
+            keterangan: alasan ? `Retur pembelian: ${alasan}` : "Retur pembelian ke pemasok",
+            debit: total,
+            kredit: 0
+        },
+        {
+            tanggal_jurnal: tanggal,
+            nomor_bukti: nomor,
+            sumber_transaksi: "RETUR PEMBELIAN",
+            id_akun: akunPersediaan.id_akun,
+            keterangan: alasan ? `Retur pembelian: ${alasan}` : "Pengurangan persediaan barang retur",
+            debit: 0,
+            kredit: total
+        }
+    ]);
+
+    alert("Retur pembelian berhasil disimpan!\nStok barang telah berkurang dan jurnal umum telah tercatat.");
+    await returPembelian();
+}
+
+// =====================================================
+// MODUL RETUR PENJUALAN (PENGEMBALIAN DARI PELANGGAN)
+// =====================================================
+
+async function returPenjualan() {
+    ubahJudul("Retur Penjualan");
+    aktifkanMenu("Retur Penjualan");
+
+    const isi = document.getElementById("isi");
+    if (!cekSupabase()) return;
+
+    isi.innerHTML = `
+        <div class="content-box">
+            <div class="page-header">
+                <div>
+                    <h2>Retur Penjualan</h2>
+                    <p>Penerimaan kembali barang rusak atau tidak sesuai dari pelanggan.</p>
+                </div>
+                <button class="btn-primary" onclick="formReturPenjualanBaru()">
+                    + Retur Penjualan Baru
+                </button>
+            </div>
+            <div id="tabelReturPenjualan">
+                <div class="empty-state">Memuat data retur penjualan...</div>
+            </div>
+        </div>
+    `;
+
+    await tampilkanDataReturPenjualan();
+}
+
+// =====================================================
+// DATA & STATE PAGINATION RETUR PENJUALAN
+// =====================================================
+let dataReturJualSemua = [];
+let halamanReturJual = 1;
+const dataPerHalamanReturJual = 10;
+
+async function tampilkanDataReturPenjualan() {
+    const container = document.getElementById("tabelReturPenjualan");
+    if (!container || !cekSupabase()) return;
+
+    const { data, error } = await supabaseClient
+        .from("retur_penjualan")
+        .select(`
+            id_retur_penjualan,
+            nomor_retur_penjualan,
+            tanggal_retur,
+            jumlah,
+            harga_jual,
+            total_retur,
+            alasan,
+            barang ( kode_barang, nama_barang, satuan )
+        `)
+        .order("tanggal_retur", { ascending: false });
+
+    if (error) {
+        container.innerHTML = `<div class="empty-state">Gagal mengambil data: ${escapeHtml(error.message)}</div>`;
+        return;
+    }
+
+    dataReturJualSemua = Array.isArray(data) ? data : [];
+    halamanReturJual = 1;
+    renderTabelReturPenjualan(1);
+}
+
+function renderTabelReturPenjualan(halaman = 1) {
+    const container = document.getElementById("tabelReturPenjualan");
+    if (!container) return;
+
+    if (dataReturJualSemua.length === 0) {
+        container.innerHTML = `<div class="empty-state">Belum ada riwayat retur penjualan.</div>`;
+        return;
+    }
+
+    const totalHalaman = Math.max(1, Math.ceil(dataReturJualSemua.length / dataPerHalamanReturJual));
+    if (halaman < 1) halaman = 1;
+    if (halaman > totalHalaman) halaman = totalHalaman;
+    halamanReturJual = halaman;
+
+    const mulai = (halaman - 1) * dataPerHalamanReturJual;
+    const selesai = mulai + dataPerHalamanReturJual;
+    const dataHalaman = dataReturJualSemua.slice(mulai, selesai);
+
+    let html = `
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>No. Retur</th>
+                        <th>Tanggal</th>
+                        <th>Barang</th>
+                        <th>Jumlah</th>
+                        <th>Harga Jual</th>
+                        <th>Total Nilai</th>
+                        <th>Alasan</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    dataHalaman.forEach((item, idx) => {
+        const brg = item.barang || {};
+        html += `
+            <tr>
+                <td>${mulai + idx + 1}</td>
+                <td><strong>${escapeHtml(item.nomor_retur_penjualan)}</strong></td>
+                <td>${formatTanggal(item.tanggal_retur)}</td>
+                <td>${escapeHtml(brg.kode_barang || "-")} - ${escapeHtml(brg.nama_barang || "-")}</td>
+                <td>${item.jumlah} ${escapeHtml(brg.satuan || "")}</td>
+                <td>${formatRupiah(item.harga_jual)}</td>
+                <td><strong>${formatRupiah(item.total_retur)}</strong></td>
+                <td>${escapeHtml(item.alasan || "-")}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+
+        <!-- KONTROL PAGINATION -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 18px; padding: 10px;">
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="renderTabelReturPenjualan(${halamanReturJual - 1})"
+                ${halamanReturJual <= 1 ? "disabled style='opacity: 0.5; cursor: not-allowed;'" : ""}
+            >
+                ← Sebelumnya
+            </button>
+
+            <span style="font-weight: 700; font-size: 13px; color: var(--text);">
+                Halaman ${halamanReturJual} dari ${totalHalaman}
+            </span>
+
+            <button
+                type="button"
+                class="btn-primary"
+                onclick="renderTabelReturPenjualan(${halamanReturJual + 1})"
+                ${halamanReturJual >= totalHalaman ? "disabled style='opacity: 0.5; cursor: not-allowed;'" : ""}
+            >
+                Berikutnya →
+            </button>
+        </div>
+    `;
+
+    container.innerHTML = html;
+} 
+
+// FORM RETUR PENJUALAN (DENGAN PENCARIAN, SCROLL, DAN TOMBOL TUTUP)
+async function formReturPenjualanBaru() {
+    if (!cekSupabase()) return;
+
+    ubahJudul("Retur Penjualan Baru");
+    const nomor = await buatNomorTransaksi("retur_penjualan", "nomor_retur_penjualan", "RPJ-");
+
+    // Ambil riwayat faktur penjualan beserta harga_beli dari relasi barang
+    const { data: daftarJual, error } = await supabaseClient
+        .from("penjualan")
+        .select(`
+            id_penjualan,
+            nomor_penjualan,
+            tanggal_penjualan,
+            total_penjualan,
+            pelanggan ( nama_pelanggan ),
+            detail_penjualan (
+                id_barang,
+                jumlah,
+                harga_jual,
+                barang ( nama_barang, kode_barang, satuan, harga_beli )
+            )
+        `)
+        .order("tanggal_penjualan", { ascending: false });
+
+    if (error) {
+        alert("Gagal memuat riwayat penjualan: " + error.message);
+        return;
+    }
+
+    window.listPenjualanUntukRetur = daftarJual || [];
+
+    document.getElementById("isi").innerHTML = `
+        <div class="content-box">
+            <div class="page-header">
+                <div>
+                    <h2>Retur Penjualan Baru</h2>
+                    <p>Pilih faktur penjualan asal barang yang dikembalikan pelanggan.</p>
+                </div>
+            </div>
+            <form onsubmit="simpanReturPenjualan(event)">
+                <div class="form-grid">
+                    <!-- NOMOR RETUR -->
+                    <div class="form-group">
+                        <label>Nomor Retur</label>
+                        <input type="text" id="nomorReturJual" value="${nomor}" readonly>
+                    </div>
+
+                    <!-- TANGGAL RETUR -->
+                    <div class="form-group">
+                        <label>Tanggal Retur</label>
+                        <input type="date" id="tanggalReturJual" value="${tanggalHariIniInput()}" required>
+                    </div>
+
+                    <!-- PILIH FAKTUR PENJUALAN -->
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Pilih Faktur Penjualan</label>
+                        <div class="lookup-wrapper" id="wrapperFakturJual">
+                            <div class="lookup-input-wrap" style="position: relative; display: flex; align-items: center;">
+                                <input
+                                    type="text"
+                                    id="cariFakturReturJual"
+                                    class="lookup-input"
+                                    autocomplete="off"
+                                    placeholder="🔍 Ketik nomor faktur (misal 'PJ-') atau klik untuk memilih..."
+                                    oninput="filterDaftarFakturJual(this.value)"
+                                    onfocus="filterDaftarFakturJual(this.value)"
+                                    style="padding-right: 40px;"
+                                >
+                                <button
+                                    type="button"
+                                    onclick="batalPilihFakturJual()"
+                                    title="Tutup daftar"
+                                    style="position: absolute; right: 10px; background: none; border: none; font-size: 14px; cursor: pointer; color: #888;"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            <!-- DAFTAR SCROLL KANAN (MAKSIMAL 5 BARIS) -->
+                            <div
+                                id="hasilDropdownFakturJual"
+                                class="lookup-results"
+                                style="max-height: 250px; overflow-y: auto; overflow-x: hidden;"
+                            ></div>
+                        </div>
+
+                        <!-- KARTU DETAIL SETELAH FAKTUR DIPILIH -->
+                        <div id="detailFakturTerpilihJual" class="lookup-selected"></div>
+
+                        <input type="hidden" id="idPenjualanTerpilih">
+                        <input type="hidden" id="idBarangReturJual">
+                        <input type="hidden" id="hppSatuanReturJual" value="0">
+                    </div>
+
+                    <!-- JUMLAH RETUR -->
+                    <div class="form-group">
+                        <label>Jumlah yang Diretur</label>
+                        <input type="number" id="jumlahReturJual" min="1" value="1" oninput="hitungTotalReturJual()" required disabled>
+                    </div>
+
+                    <!-- HARGA JUAL SATUAN -->
+                    <div class="form-group">
+                        <label>Harga Jual Satuan</label>
+                        <input type="number" id="hargaReturJual" value="0" readonly>
+                    </div>
+
+                    <!-- ALASAN -->
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Alasan Pengembalian</label>
+                        <textarea id="alasanReturJual" rows="2" placeholder="Contoh: Barang cacat/rusak atau salah varian" required></textarea>
+                    </div>
+                </div>
+
+                <!-- TOTAL NILAI -->
+                <div class="transaction-summary">
+                    <div class="transaction-summary-row transaction-summary-total">
+                        <span>Total Nilai Retur</span>
+                        <strong id="ringkasTotalReturJual">Rp 0</strong>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="returPenjualan()">Batal</button>
+                    <button type="submit" class="btn-primary" id="btnSimpanReturJual" disabled>Simpan Retur Penjualan</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.removeEventListener("click", tanganiKlikLuarFakturJual);
+    setTimeout(() => {
+        document.addEventListener("click", tanganiKlikLuarFakturJual);
+    }, 100);
+}
+
+function tanganiKlikLuarFakturJual(event) {
+    const wrapper = document.getElementById("wrapperFakturJual");
+    const container = document.getElementById("hasilDropdownFakturJual");
+    if (wrapper && container && !wrapper.contains(event.target)) {
+        container.classList.remove("open");
+    }
+}
+
+function batalPilihFakturJual() {
+    const inputCari = document.getElementById("cariFakturReturJual");
+    const container = document.getElementById("hasilDropdownFakturJual");
+    const detailBox = document.getElementById("detailFakturTerpilihJual");
+    const inputJumlah = document.getElementById("jumlahReturJual");
+    const btnSimpan = document.getElementById("btnSimpanReturJual");
+
+    if (inputCari) inputCari.value = "";
+    if (container) container.classList.remove("open");
+    if (detailBox) {
+        detailBox.innerHTML = "";
+        detailBox.classList.remove("show");
+    }
+
+    document.getElementById("idPenjualanTerpilih").value = "";
+    document.getElementById("idBarangReturJual").value = "";
+    document.getElementById("hargaReturJual").value = 0;
+    document.getElementById("hppSatuanReturJual").value = 0;
+
+    if (inputJumlah) {
+        inputJumlah.value = 1;
+        inputJumlah.disabled = true;
+    }
+    if (btnSimpan) btnSimpan.disabled = true;
+
+    hitungTotalReturJual();
+}
+
+function filterDaftarFakturJual(keyword) {
+    const container = document.getElementById("hasilDropdownFakturJual");
+    if (!container) return;
+
+    const cari = String(keyword || "").trim().toLowerCase();
+    const daftar = window.listPenjualanUntukRetur || [];
+
+    if (daftar.length === 0) {
+        container.innerHTML = `<div class="lookup-message">Belum ada riwayat transaksi penjualan.</div>`;
+        container.classList.add("open");
+        return;
+    }
+
+    const filtered = daftar.filter(item => {
+        const noJual = String(item.nomor_penjualan || "").toLowerCase();
+        const pelanggan = String(item.pelanggan?.nama_pelanggan || "").toLowerCase();
+        const detail = item.detail_penjualan?.[0] || {};
+        const barang = String(detail.barang?.nama_barang || "").toLowerCase();
+
+        return noJual.includes(cari) || pelanggan.includes(cari) || barang.includes(cari);
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="lookup-message">Faktur tidak ditemukan.</div>`;
+        container.classList.add("open");
+        return;
+    }
+
+    let listHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: #fafafa; border-bottom: 1px solid #eee; font-size: 11px; color: #666;">
+            <span>Daftar Faktur Penjualan</span>
+            <span onclick="document.getElementById('hasilDropdownFakturJual').classList.remove('open')" style="cursor: pointer; font-weight: bold; color: #d00;">✕ Tutup</span>
+        </div>
+    `;
+
+    listHTML += filtered.map((item, idx) => {
+        const detail = item.detail_penjualan?.[0] || {};
+        const brg = detail.barang || {};
+        return `
+            <button type="button" class="lookup-result" onclick="pilihSatuFakturJual(${idx})">
+                <div class="lookup-result-code">🧾 ${escapeHtml(item.nomor_penjualan)} (${formatTanggal(item.tanggal_penjualan)})</div>
+                <div class="lookup-result-name">Pelanggan: ${escapeHtml(item.pelanggan?.nama_pelanggan || "-")}</div>
+                <div class="lookup-result-info">
+                    Barang: <strong>${escapeHtml(brg.nama_barang || "-")}</strong> | Terjual: ${detail.jumlah || 0} ${escapeHtml(brg.satuan || "Unit")} | Harga Jual: ${formatRupiah(detail.harga_jual || 0)}
+                </div>
+            </button>
+        `;
+    }).join("");
+
+    container.innerHTML = listHTML;
+    window.cacheFakturJualTerfilter = filtered;
+    container.classList.add("open");
+}
+
+function pilihSatuFakturJual(index) {
+    const item = window.cacheFakturJualTerfilter?.[index];
+    if (!item) return;
+
+    const detail = item.detail_penjualan?.[0] || {};
+    const brg = detail.barang || {};
+
+    document.getElementById("cariFakturReturJual").value = `${item.nomor_penjualan} - ${item.pelanggan?.nama_pelanggan || ""}`;
+    document.getElementById("idPenjualanTerpilih").value = item.id_penjualan;
+    document.getElementById("idBarangReturJual").value = detail.id_barang;
+    document.getElementById("hargaReturJual").value = Number(detail.harga_jual || 0);
+    // Mengambil nilai modal/HPP dari relasi tabel barang
+    document.getElementById("hppSatuanReturJual").value = Number(brg.harga_beli || 0);
+
+    const inputJumlah = document.getElementById("jumlahReturJual");
+    inputJumlah.disabled = false;
+    inputJumlah.max = detail.jumlah || 1;
+    inputJumlah.value = 1;
+
+    document.getElementById("btnSimpanReturJual").disabled = false;
+
+    const detailBox = document.getElementById("detailFakturTerpilihJual");
+    detailBox.innerHTML = `
+        <div class="lookup-selected-title">📦 ${escapeHtml(brg.nama_barang || "-")} (${escapeHtml(brg.kode_barang || "-")})</div>
+        <div class="lookup-selected-info">
+            Faktur: <strong>${escapeHtml(item.nomor_penjualan)}</strong> | Pelanggan: <strong>${escapeHtml(item.pelanggan?.nama_pelanggan || "-")}</strong><br>
+            Jumlah Terjual Asal: <strong>${detail.jumlah || 0} ${escapeHtml(brg.satuan || "Unit")}</strong> (Maksimal jumlah yang bisa diretur)<br>
+            Harga Jual Satuan: <strong>${formatRupiah(detail.harga_jual || 0)}</strong>
+        </div>
+    `;
+    detailBox.classList.add("show");
+
+    document.getElementById("hasilDropdownFakturJual").classList.remove("open");
+    hitungTotalReturJual();
+}
+
+function hitungTotalReturJual() {
+    const jml = Number(document.getElementById("jumlahReturJual")?.value || 0);
+    const hrg = Number(document.getElementById("hargaReturJual")?.value || 0);
+    document.getElementById("ringkasTotalReturJual").textContent = formatRupiah(jml * hrg);
+}
+
+async function simpanReturPenjualan(e) {
+    e.preventDefault();
+    if (!cekSupabase()) return;
+
+    const nomor = document.getElementById("nomorReturJual").value;
+    const tanggal = document.getElementById("tanggalReturJual").value;
+    const idPenjualan = Number(document.getElementById("idPenjualanTerpilih").value);
+    const idBarang = Number(document.getElementById("idBarangReturJual").value);
+
+    const jumlah = Number(document.getElementById("jumlahReturJual").value);
+    const hargaJual = Number(document.getElementById("hargaReturJual").value);
+    const hppSatuan = Number(document.getElementById("hppSatuanReturJual").value);
+    const alasan = document.getElementById("alasanReturJual").value.trim();
+
+    const totalPenjualanRetur = jumlah * hargaJual;
+    const totalHPPRetur = jumlah * hppSatuan;
+
+    if (!idBarang || !idPenjualan) {
+        alert("Silakan pilih faktur penjualan terlebih dahulu.");
+        return;
+    }
+
+    // Ambil stok barang sekarang di database
+    const { data: brgData } = await supabaseClient
+        .from("barang")
+        .select("stok")
+        .eq("id_barang", idBarang)
+        .single();
+
+    const stokSekarang = Number(brgData?.stok || 0);
+
+    // Ambil akun yang dibutuhkan: Retur Penjualan (4-1100), Piutang (1-1200), Persediaan (1-1100), HPP (5-1000)
+    const { data: akunList } = await supabaseClient
+        .from("akun")
+        .select("id_akun, kode_akun")
+        .in("kode_akun", ["4-1100", "1-1200", "1-1100", "5-1000"]);
+
+    const akunReturJual = akunList?.find(a => a.kode_akun === "4-1100");
+    const akunPiutang = akunList?.find(a => a.kode_akun === "1-1200");
+    const akunPersediaan = akunList?.find(a => a.kode_akun === "1-1100");
+    const akunHPP = akunList?.find(a => a.kode_akun === "5-1000");
+
+    if (!akunReturJual || !akunPiutang || !akunPersediaan || !akunHPP) {
+        alert("Sebagian akun akuntansi (Retur Penjualan / Piutang / Persediaan / HPP) belum siap di database.");
+        return;
+    }
+
+    // 1. Simpan Transaksi Retur Penjualan
+    const { error: errRetur } = await supabaseClient.from("retur_penjualan").insert([{
+        nomor_retur_penjualan: nomor,
+        tanggal_retur: tanggal,
+        id_penjualan: idPenjualan,
+        id_barang: idBarang,
+        jumlah: jumlah,
+        harga_jual: hargaJual,
+        total_retur: totalPenjualanRetur,
+        alasan: alasan || null
+    }]);
+
+    if (errRetur) {
+        alert("Gagal menyimpan retur penjualan: " + errRetur.message);
+        return;
+    }
+
+    // 2. Tambah stok fisik di tabel barang (karena barang masuk kembali ke toko)
+    await supabaseClient
+        .from("barang")
+        .update({ stok: stokSekarang + jumlah })
+        .eq("id_barang", idBarang);
+
+    // 3. Catat Jurnal Umum:
+    // a. Debit Retur Penjualan, Kredit Piutang Usaha
+    // b. Debit Persediaan Barang, Kredit HPP
+    await supabaseClient.from("jurnal_umum").insert([
+        {
+            tanggal_jurnal: tanggal,
+            nomor_bukti: nomor,
+            sumber_transaksi: "RETUR PENJUALAN",
+            id_akun: akunReturJual.id_akun,
+            keterangan: alasan ? `Retur penjualan: ${alasan}` : "Retur penjualan dari pelanggan",
+            debit: totalPenjualanRetur,
+            kredit: 0
+        },
+        {
+            tanggal_jurnal: tanggal,
+            nomor_bukti: nomor,
+            sumber_transaksi: "RETUR PENJUALAN",
+            id_akun: akunPiutang.id_akun,
+            keterangan: alasan ? `Retur penjualan: ${alasan}` : "Pengurangan piutang atas retur barang",
+            debit: 0,
+            kredit: totalPenjualanRetur
+        },
+        {
+            tanggal_jurnal: tanggal,
+            nomor_bukti: nomor,
+            sumber_transaksi: "RETUR PENJUALAN",
+            id_akun: akunPersediaan.id_akun,
+            keterangan: "Penerimaan kembali fisik persediaan barang",
+            debit: totalHPPRetur,
+            kredit: 0
+        },
+        {
+            tanggal_jurnal: tanggal,
+            nomor_bukti: nomor,
+            sumber_transaksi: "RETUR PENJUALAN",
+            id_akun: akunHPP.id_akun,
+            keterangan: "Pembalikan beban harga pokok penjualan",
+            debit: 0,
+            kredit: totalHPPRetur
+        }
+    ]);
+
+    alert("Retur penjualan berhasil disimpan!\nStok barang bertambah kembali dan jurnal akuntansi otomatis tercatat lengkap.");
+    await returPenjualan();
+}
+
+// =====================================================
+// SISTEM LOGIN HYBRID (SUPABASE AUTH & DEMO DOSEN)
+// =====================================================
+
+// 1. Tampilkan overlay login layar penuh
+function halamanLogin() {
+    ubahJudul("Masuk Sistem");
+
+    const overlayLama = document.getElementById("loginOverlayLayarPenuh");
+    if (overlayLama) overlayLama.remove();
+
+    const overlay = document.createElement("div");
+    overlay.id = "loginOverlayLayarPenuh";
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100vw";
+    overlay.style.height = "100vh";
+    overlay.style.backgroundColor = "#1e1722";
+    overlay.style.zIndex = "999999";
+    overlay.style.display = "flex";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+    overlay.style.padding = "20px";
+    overlay.style.boxSizing = "border-box";
+
+    overlay.innerHTML = `
+        <div class="login-container" style="width: 100%; max-width: 440px;">
+            <div class="login-card">
+                <div class="login-header">
+                    <span class="report-label">SISTEM AKUNTANSI PERSEDIAAN</span>
+                    <h2>Masuk Akun</h2>
+                    <p>Silakan masuk menggunakan email Supabase atau akses demo penguji.</p>
+                </div>
+
+                <form id="formLogin" onsubmit="prosesLoginSistem(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Email Pengguna / Akun Demo</label>
+                        <input 
+                            type="text" 
+                            id="loginUsername" 
+                            class="form-control" 
+                            placeholder="cantikajoyaa@gmail.com atau admin" 
+                            required 
+                            autocomplete="username"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Kata Sandi</label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            class="form-control" 
+                            placeholder="••••••••" 
+                            required 
+                            autocomplete="current-password"
+                        />
+                    </div>
+
+                    <div id="loginPesanError" class="login-error" style="display: none; margin-bottom: 14px; padding: 10px; border-radius: 6px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; font-size: 13px; text-align: center; line-height: 1.4;"></div>
+
+                    <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-block">
+                        Masuk Sistem
+                    </button>
+                </form>
+
+                <!-- KOTAK DEMO KHUSUS PENGUJI / DOSEN -->
+                <div style="margin-top: 24px; padding: 14px; border-radius: 8px; border: 1px dashed var(--border-color, #443a46); background: rgba(255, 255, 255, 0.02); text-align: center;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted, #9c8e97); text-transform: uppercase; letter-spacing: 0.5px;">
+                        Akses Cepat Penguji / Dosen
+                    </span>
+                    <p style="font-size: 12px; margin: 6px 0 10px 0; color: var(--text, #ffffff);">
+                        Akun Instan: <strong>admin</strong> | Sandi: <strong>admin123</strong>
+                    </p>
+                    <button 
+                        type="button" 
+                        class="btn btn-secondary" 
+                        style="width: 100%; font-size: 12px; padding: 8px; cursor: pointer;"
+                        onclick="masukDemoPenguji()"
+                    >
+                        ⚡ Masuk Otomatis (Demo)
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+}
+
+// 2. Jalur Masuk Demo Instan (Khusus Dosen)
+function masukDemoPenguji() {
+    localStorage.setItem("status_login", "sudah_masuk");
+    localStorage.setItem("tipe_login", "demo");
+    localStorage.setItem("nama_user", "Penguji / Dosen");
+
+    selesaikanLogin();
+}
+
+// 3. Verifikasi Login (Supabase Auth & Fallback Demo)
+async function prosesLoginSistem(event) {
+    event.preventDefault();
+
+    const inputUser = document.getElementById("loginUsername").value.trim();
+    const inputPass = document.getElementById("loginPassword").value;
+    const errorBox = document.getElementById("loginPesanError");
+    const btnSubmit = document.getElementById("btnLoginSubmit");
+
+    if (errorBox) {
+        errorBox.style.display = "none";
+        errorBox.textContent = "";
+    }
+
+    // A. Jika dosen mengetik teks 'admin' manual
+    if (inputUser.toLowerCase() === "admin" && inputPass === "admin123") {
+        masukDemoPenguji();
+        return;
+    }
+
+    // B. Jalur Akun Asli Supabase
+    try {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = "Memeriksa ke Supabase...";
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: inputUser,
+            password: inputPass
+        });
+
+        if (error) {
+            if (errorBox) {
+                errorBox.textContent = "Email atau sandi salah: " + error.message;
+                errorBox.style.display = "block";
+            }
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = "Masuk Sistem";
+            return;
+        }
+
+        // Simpan sesi login Supabase
+        localStorage.setItem("status_login", "sudah_masuk");
+        localStorage.setItem("tipe_login", "supabase");
+        localStorage.setItem("nama_user", data.user?.email || inputUser);
+
+        selesaikanLogin();
+    } catch (err) {
+        if (errorBox) {
+            errorBox.textContent = "Terjadi kendala koneksi ke server.";
+            errorBox.style.display = "block";
+        }
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = "Masuk Sistem";
+    }
+}
+
+// 4. Tutup Layar Login dan Jalankan Dashboard
+function selesaikanLogin() {
+    const overlay = document.getElementById("loginOverlayLayarPenuh");
+    if (overlay) overlay.remove();
+    dashboard();
+}
+
+// 5. Cek Sesi Saat Muat Halaman (Tunggu Supabase Siap)
+function cekSesiLoginLokal() {
+    const statusLogin = localStorage.getItem("status_login");
+    if (statusLogin === "sudah_masuk") {
+        selesaikanLogin();
+    } else {
+        halamanLogin();
+    }
+}
+
+// 6. Tombol Logout (Pengaturan -> Keluar Akun)
+async function logoutSistem() {
+    if (typeof supabaseClient !== "undefined" && supabaseClient?.auth) {
+        try {
+            await supabaseClient.auth.signOut();
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+
+    localStorage.removeItem("status_login");
+    localStorage.removeItem("tipe_login");
+    localStorage.removeItem("nama_user");
+
+    halamanLogin();
+}
+
+// 7. Penahan: Tunggu sampai config.js selesai baru aplikasi dijalankan
+function mulaiAplikasiSaatSiap() {
+    if (typeof supabaseClient === "undefined" || !supabaseClient) {
+        setTimeout(mulaiAplikasiSaatSiap, 50);
+        return;
+    }
+    cekSesiLoginLokal();
+}
+
+window.addEventListener("load", mulaiAplikasiSaatSiap);

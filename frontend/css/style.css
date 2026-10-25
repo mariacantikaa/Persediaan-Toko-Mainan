@@ -4771,3 +4771,371 @@ body.theme-dark .neraca-total-akhir strong {
     padding: 5px 0;
     font-weight: 400;
 }
+
+/* Warna default (Tema Terang: Soft Pink, Soft Blue, atau Putih) */
+.sidebar-footer,
+.sidebar-footer p,
+.sidebar-copyright,
+.copyright {
+    color: #4a5568 !important; /* Warna abu-abu gelap/hitam lembut agar terbaca */
+    opacity: 0.85;
+}
+
+/* Saat Dark Mode Aktif */
+body.dark-mode .sidebar-footer,
+body.dark-mode .sidebar-footer p,
+body.dark-mode .sidebar-copyright,
+body.dark-mode .copyright,
+[data-theme="dark"] .sidebar-footer,
+[data-theme="dark"] .sidebar-copyright {
+    color: #e2e8f0 !important; /* Otomatis berubah putih terang di mode gelap */
+    opacity: 0.9;
+}
+
+.logo {
+    gap: 16px !important; /* Memberi jarak lega antara logo dan tulisan Toko Mainan */
+}
+
+.logo-icon {
+    width: 60px !important;
+    height: 60px !important;
+    background: transparent !important;
+    overflow: visible !important; /* Mencegah gambar atau teks terpotong */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.img-logo-brand {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    transform: none !important; /* Menjaga logo utuh tanpa terpotong tepi */
+    display: block;
+}
+
+/* =====================================================
+   FIX LOGO BANNER DASHBOARD (UKURAN PAS)
+   ===================================================== */
+.dashboard-welcome-icon {
+    width: 80px !important;
+    height: 80px !important;
+    max-width: 80px !important;
+    max-height: 80px !important;
+    background: transparent !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    overflow: hidden !important;
+}
+
+.dashboard-welcome-icon img,
+.img-banner-logo {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 80px !important;
+    max-height: 80px !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+/* =====================================================
+   PROFIL PERUSAHAAN FORMAL
+   ===================================================== */
+.profile-page-wrapper {
+    width: 100%;
+}
+
+.profile-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.profile-subtitle {
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.profile-actions-top {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-danger-soft {
+    border-color: rgba(217, 109, 109, 0.4) !important;
+    color: var(--danger) !important;
+}
+
+.btn-danger-soft:hover {
+    background: #fae1e1 !important;
+}
+
+/* Card Formal */
+.profile-card-formal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 30px 35px;
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 35px;
+    align-items: center;
+}
+
+/* Kolom Branding Kiri */
+.profile-brand-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-right: 30px;
+    border-right: 1px solid var(--border);
+}
+
+.profile-avatar-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--surface-soft);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.brand-name {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.brand-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
+
+/* Kolom Grid Kanan */
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 24px;
+}
+
+.profile-info-row {
+    background: var(--surface-soft);
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.info-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.info-value {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    word-break: break-word;
+}
+
+/* Mode Gelap */
+body.theme-dark .profile-card-formal {
+    background: #211d22;
+    border-color: #3e3540;
+}
+
+body.theme-dark .profile-brand-side {
+    border-right-color: #3e3540;
+}
+
+body.theme-dark .profile-info-row {
+    background: #28232a;
+    border-color: #3e3540;
+}
+
+body.theme-dark .brand-name,
+body.theme-dark .info-value {
+    color: #ffffff;
+}
+
+@media (max-width: 800px) {
+    .profile-card-formal {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 20px;
+    }
+
+    .profile-brand-side {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 20px;
+    }
+
+    .profile-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================================================
+   FIX TOMBOL PAGINATION IDENTIK DENGAN RETUR
+   ===================================================== */
+.custom-pagination-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 14px !important;
+    width: 100% !important;
+}
+
+.pagination-page-label {
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    color: var(--text) !important;
+    user-select: none;
+}
+
+.pagination-nav-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 9px 18px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: 0.2s ease !important;
+}
+
+/* Mode Gelap */
+body.theme-dark .pagination-nav-btn.btn-primary {
+    background: #c87998 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+body.theme-dark .pagination-nav-btn.btn-secondary {
+    background: #29242b !important;
+    color: #d4c7cf !important;
+    border: 1px solid #3e3540 !important;
+}
+
+/* Saat Disabled */
+.pagination-nav-btn:disabled,
+body.theme-dark .pagination-nav-btn:disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+/* =====================================================
+   HALAMAN LOGIN
+   ===================================================== */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+}
+
+.login-card {
+    background: var(--bg-card, #1e1b20);
+    border: 1px solid var(--border-color, #332b35);
+    border-radius: 12px;
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.login-header h2 {
+    margin: 8px 0 6px;
+    font-size: 20px;
+    color: var(--text, #ffffff);
+}
+
+.login-header p {
+    font-size: 12px;
+    color: var(--text-muted, #9c8e97);
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text, #ffffff);
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #3e3540);
+    background: var(--bg-input, #141216);
+    color: var(--text, #ffffff);
+    font-size: 13px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #c87998;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 11px;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.login-error {
+    background: rgba(220, 53, 69, 0.15);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #ff858d;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    margin-bottom: 14px;
+}
