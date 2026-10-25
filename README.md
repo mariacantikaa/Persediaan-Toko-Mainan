@@ -1,64 +1,63 @@
 # Sistem Akuntansi Persediaan Toko Mainan
-Demo website : https://mariacantikaa.github.io/Persediaan-Toko-Mainan/
 
-Aplikasi web untuk membantu pengelolaan persediaan barang dan pencatatan transaksi toko mainan. Aplikasi menggunakan HTML, CSS, dan JavaScript pada sisi frontend, serta Supabase dengan PostgreSQL untuk penyimpanan data.
+Aplikasi web untuk membantu pencatatan persediaan dan transaksi toko mainan. Antarmuka menggunakan HTML, CSS, dan JavaScript, sedangkan data aplikasi disimpan menggunakan Supabase (PostgreSQL).
 
 ## Fitur
 
-- **Dashboard persediaan** untuk melihat ringkasan data dan transaksi.
-- **Data barang** untuk mengelola informasi barang dan stok.
-- **Data pemasok dan pelanggan** untuk menyimpan data pihak terkait transaksi.
-- **Pembelian dan penjualan** untuk mencatat transaksi barang.
-- **Penyesuaian stok** untuk mencatat perubahan persediaan.
-- **Jurnal umum dan buku besar** untuk melihat pencatatan akuntansi.
+- **Dashboard**: ringkasan data dan informasi stok.
+- **Data master**: pengelolaan barang, pemasok, dan pelanggan.
+- **Transaksi**: pembelian, penjualan, penyesuaian stok, retur pembelian, dan retur penjualan.
+- **Akuntansi**: jurnal umum dan buku besar.
+- **Laporan**: laporan stok, pembelian, penjualan, kartu persediaan, laba rugi, dan neraca.
+- **Pengaturan tampilan**: pilihan tema aplikasi.
+- Pencarian data barang, pemasok, dan pelanggan pada formulir transaksi.
 
 ## Teknologi
 
-- HTML, CSS, dan JavaScript
-- Supabase
-- PostgreSQL
-- Supabase JavaScript Client v2 melalui CDN jsDelivr
+- HTML5 dan CSS3
+- JavaScript (tanpa framework)
+- [Supabase](https://supabase.com/) untuk basis data PostgreSQL
+- Supabase JavaScript Client v2, dimuat melalui jsDelivr CDN
 
-## Struktur Proyek
+## Struktur proyek
 
 ```text
-.
-├── .gitignore
-├── README.md
-└── UTS/
-    ├── backend/
-    │   └── database.sql
-    └── frontend/
-        ├── css/
-        │   └── style.css
-        ├── html/
-        │   └── index.html
-        └── js/
-            ├── app.js
-            └── config.js
+UTS/
+├── backend/
+│   └── database.sql       # Skema dan data awal Supabase/PostgreSQL
+├── frontend/
+│   ├── css/
+│   │   └── style.css      # Gaya dan tema antarmuka
+│   ├── html/
+│   │   └── index.html     # Halaman utama aplikasi
+│   ├── img/
+│   │   └── logo-ctoy.png  # Logo aplikasi
+│   └── js/
+│       ├── app.js         # Navigasi, tampilan, dan logika aplikasi
+│       └── config.js      # Konfigurasi Supabase dan fungsi format
+└── README.md
 ```
 
-## Persyaratan
+## Persiapan Supabase
 
-- Visual Studio Code
-- Browser, seperti Google Chrome atau Microsoft Edge
-- Koneksi internet
-- Project Supabase yang aktif
-- Ekstensi Live Server di Visual Studio Code
+1. Buat proyek di [Supabase](https://supabase.com/).
+2. Buka **SQL Editor** pada proyek tersebut.
+3. Jalankan isi file [`backend/database.sql`](backend/database.sql). Skrip membuat tabel barang, pemasok, pelanggan, pembelian beserta detailnya, penjualan beserta detailnya, akun, dan jurnal umum. Skrip juga menambahkan beberapa data contoh.
+4. Di **Project Settings → API**, salin Project URL dan publishable/anon key.
+5. Buka [`frontend/js/config.js`](frontend/js/config.js), lalu isi `SUPABASE_URL` dan `SUPABASE_ANON_KEY` dengan nilai proyek Supabase Anda.
+6. Pastikan kebijakan akses (RLS) dan izin tabel Supabase telah sesuai dengan operasi yang digunakan aplikasi.
 
-## Cara Menjalankan
+> Gunakan hanya publishable/anon key di aplikasi browser. Jangan pernah menaruh `service_role` key di kode frontend atau mengunggahnya ke GitHub.
 
-1. Buka folder utama proyek di Visual Studio Code. Folder ini berisi `README.md` dan folder `UTS`.
-2. Buat project di [Supabase](https://supabase.com/) jika belum memilikinya.
-3. Buka **SQL Editor** di dashboard Supabase, lalu jalankan isi file `UTS/backend/database.sql`.
-4. Buka `UTS/frontend/js/config.js`. Isi `SUPABASE_URL` dan `SUPABASE_ANON_KEY` dengan Project URL dan publishable key (atau anon key) dari pengaturan API Supabase.
-5. Buka `UTS/frontend/html/index.html`, lalu pilih **Open with Live Server**.
-6. Periksa halaman aplikasi di browser. Pastikan koneksi internet tersedia agar aplikasi dapat memuat Supabase Client dan terhubung ke project Supabase.
+## Menjalankan aplikasi
 
-Jalankan aplikasi melalui server lokal seperti Live Server. Jangan membuka halaman dengan alamat `file://`.
+1. Pastikan konfigurasi Supabase dan skema basis data sudah disiapkan.
+2. Buka folder proyek di Visual Studio Code.
+3. Jalankan file `frontend/html/index.html` menggunakan server lokal, misalnya ekstensi **Live Server**.
+4. Buka alamat lokal yang ditampilkan server pada browser.
 
-## Pemecahan Masalah
+Aplikasi memuat Supabase JavaScript Client dari CDN, sehingga koneksi internet diperlukan. Jika aplikasi tidak dapat membaca atau menyimpan data, periksa konfigurasi URL/key, tabel yang sudah dibuat, dan kebijakan akses Supabase.
 
-- **`Failed to fetch` atau `DNS_PROBE_FINISHED_NXDOMAIN`:** periksa koneksi internet, Project URL di `config.js`, status project Supabase, dan akses jaringan ke Supabase.
-- **Tabel tidak ditemukan:** pastikan seluruh script `UTS/backend/database.sql` berhasil dijalankan pada project Supabase yang benar.
-- **Akses ditolak atau data tidak muncul:** periksa kebijakan akses/RLS tabel di Supabase serta key yang digunakan pada `config.js`.
+## Catatan
+
+File SQL menyediakan skema dasar persediaan, pembelian, penjualan, serta akuntansi. Pastikan skema dan kebijakan di proyek Supabase Anda cocok dengan modul yang akan digunakan. Aplikasi ini merupakan proyek berbasis web sisi-klien dan tidak menyediakan server aplikasi terpisah.
