@@ -1,5 +1,7 @@
 # Sistem Akuntansi Persediaan Toko Mainan
 
+LINK DEMO : https://mariacantikaa.github.io/Persediaan-Toko-Mainan/
+
 Aplikasi web untuk membantu pencatatan persediaan dan transaksi toko mainan. Antarmuka menggunakan HTML, CSS, dan JavaScript, sedangkan data aplikasi disimpan menggunakan Supabase (PostgreSQL).
 
 ## Fitur
